@@ -1,0 +1,37 @@
+.loader {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    justify-items: center;
+    box-sizing: border-box;
+  }
+  
+  .loader-ball {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+  
+    margin: 0 4px 0 4px;
+    background-color: #0064bd;
+  
+    transform: scale(1);
+    opacity: 1;
+  
+    will-change: transform;
+    animation: grow 1s ease-in-out infinite alternate;
+  }
+  .loader-ball.ball2 {
+    animation-delay: 0.33s;
+  }
+  .loader-ball.ball3 {
+    animation-delay: 0.66s;
+  }
+  
+  @keyframes grow {
+    to {
+      transform: scale(0);
+      opacity: 0;
+    }
+  }
+  
