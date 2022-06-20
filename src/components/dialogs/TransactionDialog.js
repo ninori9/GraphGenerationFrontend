@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
 
 import "./TransactionDialog.css"
 
 const TransactionDialog = (props) => {
+    const show_write = props.transaction.class === 'Update' || props.transaction.class === 'Write-only';
+    const show_read = props.transaction.class === 'Update' || props.transaction.class === 'Read.only';
+
 
     // Transaction codes, see: https://github.com/hyperledger/fabric-protos-go/blob/main/peer/transaction.pb.go
     const tx_codes = {
@@ -42,9 +45,43 @@ const TransactionDialog = (props) => {
     const status_color = props.transaction.status === 0 ? 'text-green-800' : 'text-red-800';
     const status_text = `${props.transaction.status} (${tx_codes[props.transaction.status]})`;
 
+    const get_endorsers_text = function() {
+      console.log('transaction.endorsements', props.transaction.endorsements);
+      let endorsers_text = `[`;
+      for(let i=0; i<props.transaction.endorsements.length; i++) {
+        endorsers_text += `${props.transaction.endorsements[i].endorser.Mspid}`
+        if(i < props.transaction.endorsements.length - 1) {
+          endorsers_text += `, `
+        }
+      }
+      endorsers_text += `]`;
+      return endorsers_text;
+    };
+
+    /*const get_class_text = function() {
+      let ct = ``;
+      if(props.transaction.class === 'Update') {
+        ct += `(${props.transaction.rw_set.})`
+      }
+    };
+
+    const get_writes = function() {
+
+    };
+
+    const get_reads = function() {
+
+    };
+
+    const get_range_reads = function() {
+
+    };*/
+
+    const endorsement_text = get_endorsers_text();
+
     return (
         <div>
-          {props.transaction === null? <div/> :
+          {props.transaction === null ? <div/> :
             <Modal
                 isOpen={props.isOpen}
                 ariaHideApp={false}
@@ -63,8 +100,18 @@ const TransactionDialog = (props) => {
                     <div className="w-full h-px bg-tum" />
                     {/*Attributes (tx_id, block, status)*/}
                     <div>
-                      <p className='font-medium text-black-800 px-4 pt-2 text-ellipsis overflow-hidden'><b>tx_id: </b>{`${props.transaction.tx_id}`}</p>
+                      <p className='font-medium text-black-800 px-4 pt-2 text-ellipsis overflow-hidden'><b>Transaction ID: </b>{`${props.transaction.tx_id} ${props.transaction.tx_id}`}</p>
+                      <p className='font-medium text-black-800 px-4 pt-2 text-ellipsis overflow-hidden'><b>Creator MSPID: </b>{`${props.transaction.creator.Mspid}`}</p>
+                      <br/>
+                      <p className='font-medium text-black-800 px-4 pt-2 text-ellipsis overflow-hidden'><b>Transaction class: </b>{`${props.transaction.class}`}</p>
+                      {/*TODO: Write, read, range read set + max lines*/}
+                      <br/>
                       <p className='font-medium text-black-800 px-4 text-ellipsis overflow-hidden'><b>Block number: </b>{`${props.transaction.block_number}`}</p>
+                      <p className='font-medium text-black-800 px-4 text-ellipsis overflow-hidden'><b>Transaction number in block: </b>{`${props.transaction.tx_block_number}`}</p>
+                      <br/>
+                      <p className='font-medium text-black-800 px-4 text-ellipsis overflow-hidden'><b>Chaincode: </b>{`${props.transaction.chaincode_spec.chaincode_id.name}`}</p>
+                      <p className='font-medium text-black-800 px-4 text-ellipsis overflow-hidden'><b>Endorsing peers: </b>{`${endorsement_text}`}</p>
+                      <br/>
                       <p className='font-medium px-4 text-ellipsis overflow-hidden'><span className='font-bold text-black-800'>Status: </span><span className={status_color}>{status_text}</span></p>
                     </div>
                 </div>

@@ -27,13 +27,15 @@ const GeneratePage = () => {
 
   // Get transaction details of selected transaction
   const getSelectedTransaction = () => {
+    // If no selected tx return placeholder transaction
+    const placeholder = {tx_number: '', tx_id: '', creator: '', class: '', typeString: '', chaincode_spec: {chaincode_id: {name: ''}}, endorsements: [], block_number: '', tx_block_number: '', status: 0};
     if(blockData.transactions === null || blockData.transactions.length === 0) {
-        return {};
+        return placeholder;
     }
     else {
         const matchingTxs = blockData.transactions.filter(tx => tx.tx_number === selectedTransaction);
         if(matchingTxs.length === 0) {
-            return {};
+            return placeholder;
         }
         else {
             return matchingTxs[0];
@@ -44,7 +46,7 @@ const GeneratePage = () => {
   const getBlockData = async (startblock, endblock) => {
     let response;
     try {
-        response = await ky.get(`http://localhost:3007/blockData/exampleData?startblock=${startblock}&endblock=${endblock}`).json();
+        response = await ky.get(`http://localhost:3007/blockData/ggTest?startblock=${startblock}&endblock=${endblock}`).json();
         setFetchedStartBlock(startblock);
         setFetchedEndBlock(endblock);
         setBlockData(response);

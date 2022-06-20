@@ -8,8 +8,8 @@ const TransactionConflictGraphVis = (props) => {
 
   // Color blocks in different colors
   const blockColors = [
-    '#ffffff', // white
     '#d4eeee', // Fabric light blue
+    '#ffffff', // white
     '#fbbbb7', // Fabric light
     '#e5e7eb', // Gray-200, see divider color
     '#89c8ff', // TUM light
@@ -49,6 +49,7 @@ const TransactionConflictGraphVis = (props) => {
     let parsedEdges = [];
 
     for(let i=0; i<edges.length; i++) {
+      // If edge already exists "the other way around", add curve
       if(edges.filter(edge => (edge.from === edges[i].to && edge.to === edges[i].from)).length > 0) {
         parsedEdges.push(
           {
