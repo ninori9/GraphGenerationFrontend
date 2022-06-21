@@ -9,8 +9,8 @@ const TransactionConflictGraphVis = (props) => {
   // Color blocks in different colors
   const blockColors = [
     '#d4eeee', // Fabric light blue
-    '#ffffff', // white
     '#fbbbb7', // Fabric light
+    '#ffffff', // white
     '#e5e7eb', // Gray-200, see divider color
     '#89c8ff', // TUM light
   ];
@@ -60,6 +60,7 @@ const TransactionConflictGraphVis = (props) => {
               color: edges[i].reason_for_failure? '#991b1b' : '#000000',
               highlight: '#0064BD',
             },
+            width: edges[i].reason_for_failure? 3 : 2,
             smooth: {
               enabled: true,
               type: "curvedCW",
@@ -78,6 +79,7 @@ const TransactionConflictGraphVis = (props) => {
               color: edges[i].reason_for_failure? '#991b1b' : '#000000',
               highlight: '#0064BD',
             },
+            width: edges[i].reason_for_failure? 3 : 2,
           }
         );
       }
@@ -87,20 +89,19 @@ const TransactionConflictGraphVis = (props) => {
   
 
   // Height of graph (minimum 300 or 0 if no transactions; maxiumum 4800px (TODO: maybe function depending on amount of edges etc.))
-  const h = `${(props.transactions.length * 32 > 400 || props.transactions.length == 0) ?
+  /*const h = `${(props.transactions.length * 32 > 400 || props.transactions.length == 0) ?
     (props.transactions.length * 32 > 4800 ? 4800: props.transactions.length * 32) : 400}px`;
-  console.log('Graph height', h);
+  console.log('Graph height', h);*/
 
 
   const options = {
-    height: h,
+    height: '100%',
     width: '100%',
     clickToUse: false,
     layout: {
       hierarchical: false
     },
     edges: {
-      width: 2,
       arrowStrikethrough: false
     },
     nodes: {
