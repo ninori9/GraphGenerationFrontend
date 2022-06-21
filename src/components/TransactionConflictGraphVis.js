@@ -5,23 +5,6 @@ import Graph from "react-graph-vis";
   
 const TransactionConflictGraphVis = (props) => {
   const graphRef = useRef(null);
-  
-  useEffect(() => {
-    if(graphRef.current) {
-      graphRef.current.moveTo({
-        position: {x:0, y:0},    // position to animate to
-        scale: 1.5,              // scale to animate to
-        offset: {x:0, y:0},      // offset from the center in DOM pixels (Numbers)
-        animation: {             // animation object, can also be Boolean
-          duration: 1000,                 // animation duration in milliseconds (Number)
-          easingFunction: "easeInOutQuad" // Animation easing function, available are:
-        }                 
-      });
-    }
-    else {
-      console.log('! graphRef.current');
-    }
-  }, [graphRef.current]);
 
   // Color blocks in different colors
   const blockColors = [
@@ -156,6 +139,15 @@ const TransactionConflictGraphVis = (props) => {
         if(nodes.length === 0 && edges.length !== 0) {
           props.setSelectedEdge(edges[0]);
         }
+        graphRef.current.moveTo({
+          position: {x:0, y:0},    // position to animate to
+          scale: 1.5,              // scale to animate to
+          offset: {x:0, y:0},      // offset from the center in DOM pixels (Numbers)
+          animation: {             // animation object, can also be Boolean
+            duration: 1000,                 // animation duration in milliseconds (Number)
+            easingFunction: "easeInOutQuad" // Animation easing function, available are:
+          }                 
+        });
       }
     }
   })
@@ -165,7 +157,7 @@ const TransactionConflictGraphVis = (props) => {
 
   return (
     <div className='border-2 border-solid border-tum w-full h-fit'>
-      <Graph graph={graph} options={options} events={events} />
+      <Graph ref={graphRef} graph={graph} options={options} events={events} />
     </div>
   );
 }
