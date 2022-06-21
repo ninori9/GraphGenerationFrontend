@@ -18,7 +18,7 @@ const TransactionConflictGraphVis = (props) => {
   useEffect(() => {
     graphRef.current.Network.moveTo({
       position: {x:0, y:0},    // position to animate to
-      scale: 1.5,              // scale to animate to
+      scale: 1,              // scale to animate to
       offset: {x:0, y:0},      // offset from the center in DOM pixels (Numbers)
       animation: {             // animation object, can also be Boolean
         duration: 1000,                 // animation duration in milliseconds (Number)
@@ -151,6 +151,12 @@ const TransactionConflictGraphVis = (props) => {
         if(nodes.length === 0 && edges.length !== 0) {
           props.setSelectedEdge(edges[0]);
         }
+      }
+    },
+    interaction: {
+      navigationButtons: true,
+      keyboard: {
+	enabled: true,
       }
     }
   })
