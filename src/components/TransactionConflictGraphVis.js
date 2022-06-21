@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useRef, useEffect} from 'react';
+import React, {useState, componentDidMount, useRef, useEffect} from 'react';
 import PropTypes from 'prop-types'; 
 import Graph from "react-graph-vis";
   
@@ -14,6 +14,18 @@ const TransactionConflictGraphVis = (props) => {
     '#e5e7eb', // Gray-200, see divider color
     '#89c8ff', // TUM light
   ];
+
+  useEffect(() => {
+    graphRef.current.Network.moveTo({
+      position: {x:0, y:0},    // position to animate to
+      scale: 1.5,              // scale to animate to
+      offset: {x:0, y:0},      // offset from the center in DOM pixels (Numbers)
+      animation: {             // animation object, can also be Boolean
+        duration: 1000,                 // animation duration in milliseconds (Number)
+        easingFunction: "easeInOutQuad" // Animation easing function, available are:
+      }                 
+    });
+  }, [])
 
   
   // Parse transactions from received input to nodes
@@ -139,17 +151,6 @@ const TransactionConflictGraphVis = (props) => {
         if(nodes.length === 0 && edges.length !== 0) {
           props.setSelectedEdge(edges[0]);
         }
-        console.log(graphRef.current);
-        console.log(graphRef.current.$el);
-        graphRef.current.$el.moveTo({
-          position: {x:0, y:0},    // position to animate to
-          scale: 1.5,              // scale to animate to
-          offset: {x:0, y:0},      // offset from the center in DOM pixels (Numbers)
-          animation: {             // animation object, can also be Boolean
-            duration: 1000,                 // animation duration in milliseconds (Number)
-            easingFunction: "easeInOutQuad" // Animation easing function, available are:
-          }                 
-        });
       }
     }
   })
