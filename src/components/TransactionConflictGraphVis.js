@@ -4,11 +4,24 @@ import Graph from "react-graph-vis";
   
   
 const TransactionConflictGraphVis = (props) => {
-  const canvasRef = useRef(null);
+  const graphRef = useRef(null);
   
   useEffect(() => {
-    console.log('width', canvasRef.current ? canvasRef.current.offsetWidth : 0);
-  }, [canvasRef.current]);
+    if(graphRef.current) {
+      graphRef.current.moveTo({
+        position: {x:0, y:0},    // position to animate to
+        scale: 1.0,              // scale to animate to
+        offset: {x:0, y:0},      // offset from the center in DOM pixels (Numbers)
+        animation: {             // animation object, can also be Boolean
+          duration: 1000,                 // animation duration in milliseconds (Number)
+          easingFunction: "easeInOutQuad" // Animation easing function, available are:
+        }                 
+      });
+    }
+    else {
+      console.log('! graphRef.current');
+    }
+  }, [graphRef.current]);
 
   // Color blocks in different colors
   const blockColors = [
@@ -92,9 +105,9 @@ const TransactionConflictGraphVis = (props) => {
   }, []);
   
 
-  // Height of graph (minimum 300 or 0 if no transactions; maxiumum 2000px (TODO: maybe function depending on amount of edges etc.))
+  // Height of graph (minimum 300 or 0 if no transactions; maxiumum 1280 (corresponds to max width)
   const h = `${(props.transactions.length * 32 > 400 || props.transactions.length == 0) ?
-    (props.transactions.length * 32 > 2000 ? 2000: props.transactions.length * 32) : 400}px`;
+    (props.transactions.length * 32 > 1280 ? 1280: props.transactions.length * 32) : 400}px`;
   console.log('Graph height', h);
 
 
