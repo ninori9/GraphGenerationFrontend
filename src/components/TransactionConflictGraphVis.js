@@ -10,7 +10,7 @@ const TransactionConflictGraphVis = (props) => {
     if(graphRef.current) {
       graphRef.current.moveTo({
         position: {x:0, y:0},    // position to animate to
-        scale: 1.0,              // scale to animate to
+        scale: 1.5,              // scale to animate to
         offset: {x:0, y:0},      // offset from the center in DOM pixels (Numbers)
         animation: {             // animation object, can also be Boolean
           duration: 1000,                 // animation duration in milliseconds (Number)
@@ -164,7 +164,7 @@ const TransactionConflictGraphVis = (props) => {
 
 
   return (
-    <div ref={canvasRef} className='border-2 border-solid border-tum w-full h-fit'>
+    <div className='border-2 border-solid border-tum w-full h-fit'>
       <Graph graph={graph} options={options} events={events} />
     </div>
   );
