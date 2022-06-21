@@ -34,7 +34,7 @@ const TransactionConflictGraphVis = (props) => {
 
   
   // Parse transactions from received input to nodes
-  const parseTransactionsToNodes = useCallback((transactions) => {
+  const parseTransactionsToNodes = ((transactions) => {
     let parsedTx = [];
 
     let blocks= [];
@@ -58,11 +58,11 @@ const TransactionConflictGraphVis = (props) => {
       );
     }
     return parsedTx;
-  }, []);
+  });
 
 
   // Method to add curve to bidirected straight edges
-  const editEdges = useCallback((edges) => {
+  const editEdges = ((edges) => {
     let parsedEdges = [];
 
     for(let i=0; i<edges.length; i++) {
@@ -102,11 +102,11 @@ const TransactionConflictGraphVis = (props) => {
       }
     }
     return parsedEdges;
-  }, []);
+  });
   
 
   // Height of graph (minimum 300 or 0 if no transactions; maxiumum 1280 (corresponds to max width)
-  const h = `${(props.transactions.length * 32 > 400 || props.transactions.length == 0) ?
+  const h = `${(props.transactions.length * 32 > 400 || props.transactions.length === 0) ?
     (props.transactions.length * 32 > 1280 ? 1280: props.transactions.length * 32) : 400}px`;
   console.log('Graph height', h);
 
