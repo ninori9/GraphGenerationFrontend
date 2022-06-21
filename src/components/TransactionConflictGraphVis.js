@@ -88,10 +88,10 @@ const TransactionConflictGraphVis = (props) => {
   }, []);
   
 
-  // Height of graph (minimum 300 or 0 if no transactions; maxiumum 4800px (TODO: maybe function depending on amount of edges etc.))
-  /*const h = `${(props.transactions.length * 32 > 400 || props.transactions.length == 0) ?
-    (props.transactions.length * 32 > 4800 ? 4800: props.transactions.length * 32) : 400}px`;
-  console.log('Graph height', h);*/
+  // Height of graph (minimum 300 or 0 if no transactions; maxiumum 2000px (TODO: maybe function depending on amount of edges etc.))
+  const h = `${(props.transactions.length * 32 > 400 || props.transactions.length == 0) ?
+    (props.transactions.length * 32 > 2000 ? 2000: props.transactions.length * 32) : 400}px`;
+  console.log('Graph height', h);
 
 
   const options = {
