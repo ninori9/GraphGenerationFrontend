@@ -1,7 +1,6 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useRef, useEffect} from 'react';
 import PropTypes from 'prop-types'; 
 import Graph from "react-graph-vis";
-import TransactionDialog from './dialogs/TransactionDialog';
   
   
 const TransactionConflictGraphVis = (props) => {
@@ -9,7 +8,7 @@ const TransactionConflictGraphVis = (props) => {
   
   useEffect(() => {
     console.log('width', canvasRef.current ? canvasRef.current.offsetWidth : 0);
-  }, [ref.current]);
+  }, [canvasRef.current]);
 
   // Color blocks in different colors
   const blockColors = [
