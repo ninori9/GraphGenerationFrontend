@@ -5,6 +5,15 @@ import DownloadButton from './buttons/DownloadButton';
 import { tx_codes } from '../utils/Utils';
 
 
+const GraphAttributeDivider = () => {
+  return (
+    <div className="w-full">
+    <div className="w-full h-px bg-gray-200 my-4 pr-8" />
+    </div>
+  );
+};
+
+
 const GraphHeader = (props) => {
 
     const getFailureTypeString = function() {
@@ -33,7 +42,6 @@ const GraphHeader = (props) => {
                 str += `)`;
             }
         }
-        console.log('To abort', str);
         return str;
     };
 
@@ -61,15 +69,14 @@ const GraphHeader = (props) => {
             <DownloadButton data={props.blockData}/>
         </div>
 
-        <ul className="list-disc pl-8 pb-8 font-semibold text-lg text-black-800">
+        <ul className="list-disc pl-8 pr-8 pb-8 font-semibold text-lg text-black-800">
             <li>{`Total transactions: ${props.blockData.attributes.transactions}`}</li>
             <li className='text-green-800'>{`Successful transactions: ${successfulTx}`}</li>
-            <li className='text-red-800'><span>{`Failed transactions: ${props.blockData.attributes.totalFailures} `}</span><span className=' text-black-800 font-medium'>{`${failureTypeString}`}</span></li>
+            <li className='text-red-800'><span>{`Failed transactions: ${props.blockData.attributes.totalFailures} `}</span><span className='font-medium'>{`${failureTypeString}`}</span></li>
             <li className='text-red-800'>{`Failure rate: ${failureRate}%`}</li>
-            <br/>
-            <li className='text-black-800'>{`Conflicts between transactions: ${props.blockData.attributes.conflicts}`}</li>
-            <li className='text-red-800'>{`Conflicts leading to transaction failure: ${props.blockData.attributes.conflictsLeadingToFailure}`}</li>
-            <br/>
+            <GraphAttributeDivider/>
+            <li><span>{`Conflicts between transactions: ${props.blockData.attributes.conflicts} `}</span><span className='text-red-800 font-medium'>{`(${props.blockData.attributes.conflictsLeadingToFailure} conflicts leading to transaction failure)`}</span></li>
+            <GraphAttributeDivider/>
             <li className={serializableStyle}>{serializable}</li>
             <li className='text-black-800 font-medium'> {abortText}</li>
         </ul>

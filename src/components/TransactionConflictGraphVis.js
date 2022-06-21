@@ -53,8 +53,13 @@ const TransactionConflictGraphVis = (props) => {
       if(edges.filter(edge => (edge.from === edges[i].to && edge.to === edges[i].from)).length > 0) {
         parsedEdges.push(
           {
+            id: edges[i].edge_number,
             from: edges[i].from,
             to: edges[i].to,
+            color: {
+              color: edges[i].reason_for_failure? '#991b1b' : '#000000',
+              highlight: '#0064BD',
+            },
             smooth: {
               enabled: true,
               type: "curvedCW",
@@ -66,8 +71,13 @@ const TransactionConflictGraphVis = (props) => {
       else {
         parsedEdges.push(
           {
+            id: edges[i].edge_number,
             from: edges[i].from,
             to: edges[i].to,
+            color: {
+              color: edges[i].reason_for_failure? '#991b1b' : '#000000',
+              highlight: '#0064BD',
+            },
           }
         );
       }
@@ -90,7 +100,6 @@ const TransactionConflictGraphVis = (props) => {
       hierarchical: false
     },
     edges: {
-      color: "#000000",
       width: 2,
       arrowStrikethrough: false
     },
@@ -101,7 +110,6 @@ const TransactionConflictGraphVis = (props) => {
       },
       labelHighlightBold: true,
       color: {
-        // Color when node is selected, TODO: make text white see: https://stackoverflow.com/questions/66141331/is-it-possible-to-set-the-font-color-on-nodes-when-selected-in-vis-js
         highlight: {
           border: '#0064BD'
         },
@@ -117,13 +125,18 @@ const TransactionConflictGraphVis = (props) => {
       edges: editEdges(props.edges),
     },
     events: {
-      // TODO: dialog with information about conflict when pressing on edge
       deselectNode: ({ nodes, edges }) => {
         props.setSelectedTransaction(null);
+      },
+      deselectEdge: ({ nodes, edges}) => {
+        props.setSelectedEdge(null);
       },
       click: ({nodes, edges}) => {
         if(nodes.length !== 0) {
           props.setSelectedTransaction(nodes[0]);
+        }
+        if(nodes.length === 0 && edges.length !== 0) {
+          props.setSelectedEdge(edges[0]);
         }
       }
     }
@@ -143,7 +156,8 @@ const TransactionConflictGraphVis = (props) => {
 TransactionConflictGraphVis.propTypes = {
   transactions: PropTypes.array.isRequired,
   setSelectedTransaction: PropTypes.func.isRequired,
-  edges: PropTypes.array.isRequired
+  edges: PropTypes.array.isRequired,
+  setSelectedEdge: PropTypes.func.isRequired,
 };
 
 export default TransactionConflictGraphVis;

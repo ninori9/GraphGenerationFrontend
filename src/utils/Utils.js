@@ -1,3 +1,21 @@
+import React from "react";
+
+export const AttributeDivider = () => {
+    return (
+      <div className="w-full">
+        <div className="w-full h-px bg-gray-200" />
+      </div>
+    );
+  };
+  
+export const CategoryDivider = () => {
+  return (
+    <div className="w-full">
+    <div className="w-full h-px bg-fabric-light my-4" />
+    </div>
+  );
+};
+
 // Transaction codes, see: https://github.com/hyperledger/fabric-protos-go/blob/main/peer/transaction.pb.go
 export const tx_codes = {
     0:   "VALID",
@@ -30,6 +48,23 @@ export const tx_codes = {
     255: "INVALID_OTHER_REASON",
 }
 
+export const placeholder_tx = {
+    tx_number: '', tx_id: '', creator: '', class: '', typeString: '', 
+    rw_set: [],
+    chaincode_spec: {chaincode_id: {name: ''}}, 
+    endorsements: [], 
+    block_number: '', tx_block_number: '', 
+    status: 0
+};
+
+export const placeholder_edge = {
+    edge_number: '', from: '', to: '', key_overlap: [], reason_for_failure: false,
+}
+
 export default {
-    tx_codes
+    AttributeDivider,
+    CategoryDivider,
+    tx_codes,
+    placeholder_tx,
+    placeholder_edge,
 };

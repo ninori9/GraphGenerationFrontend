@@ -8,6 +8,9 @@ import PageLayout from '../components/PageLayout';
 import TransactionConflictGraphVis from '../components/TransactionConflictGraphVis';
 import TransactionDialog from '../components/dialogs/TransactionDialog';
 
+import { placeholder_tx, placeholder_edge } from '../utils/Utils';
+import EdgeDialog from '../components/dialogs/EdgeDialog';
+
 const GeneratePage = () => {
   // Flag that is 'true' if fetching in progress
   const [fetchingData, setFetchingData] = useState(false);
@@ -17,8 +20,9 @@ const GeneratePage = () => {
 
   const [blockData, setBlockData] = useState({});
 
-  // State for showing transaction details dialog
+  // State for showing transaction and edge details dialog
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [selectedEdge, setSelectedEdge] = useState(null);
 
 
   const fetchingDataFunction = () => {
@@ -28,14 +32,13 @@ const GeneratePage = () => {
   // Get transaction details of selected transaction
   const getSelectedTransaction = () => {
     // If no selected tx return placeholder transaction
-    const placeholder = {tx_number: '', tx_id: '', creator: '', class: '', typeString: '', chaincode_spec: {chaincode_id: {name: ''}}, endorsements: [], block_number: '', tx_block_number: '', status: 0};
     if(blockData.transactions === null || blockData.transactions.length === 0) {
-        return placeholder;
+        return placeholder_tx;
     }
     else {
         const matchingTxs = blockData.transactions.filter(tx => tx.tx_number === selectedTransaction);
         if(matchingTxs.length === 0) {
-            return placeholder;
+            return placeholder_tx;
         }
         else {
             return matchingTxs[0];
@@ -43,10 +46,27 @@ const GeneratePage = () => {
     }
   };
 
+  // Get transaction details of selected edge
+  const getSelectedEdge = () => {
+    // If no selected edge return placeholder edge
+    if(blockData.edges === null || blockData.edges.length === 0) {
+        return placeholder_edge;
+    }
+    else {
+        const matchingEdges = blockData.edges.filter(edge => edge.edge_number === selectedEdge);
+        if(matchingEdges.length === 0) {
+            return placeholder_edge;
+        }
+        else {
+            return matchingEdges[0];
+        }
+    }
+  };
+
   const getBlockData = async (startblock, endblock) => {
     let response;
     try {
-        response = await ky.get(`http://localhost:3007/blockData/ggTest?startblock=${startblock}&endblock=${endblock}`).json();
+        response = await ky.get(`http://localhost:3007/blockData/ggTest?startblock=${startblock}&endblock=${endblock}`, {timeout: 180000}).json();
         setFetchedStartBlock(startblock);
         setFetchedEndBlock(endblock);
         setBlockData(response);
@@ -76,8 +96,9 @@ const GeneratePage = () => {
             null :
             <div className='w-full'>
                 <GraphHeader startblock={fetchedStartBlock} endblock={fetchedEndBlock} blockData={blockData}/>
-                <TransactionConflictGraphVis transactions={blockData.transactions} edges={blockData.edges} setSelectedTransaction={setSelectedTransaction}/>
+                <TransactionConflictGraphVis transactions={blockData.transactions} edges={blockData.edges} setSelectedTransaction={setSelectedTransaction} setSelectedEdge={setSelectedEdge}/>
                 <TransactionDialog isOpen={selectedTransaction!==null} transaction={getSelectedTransaction()} setIsOpen={setSelectedTransaction}/>
+                <EdgeDialog isOpen={selectedEdge!==null} edge={getSelectedEdge()} setIsOpen={setSelectedEdge}/>
             </div>
         }
         <div className='h-12'/>
