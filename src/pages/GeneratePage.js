@@ -66,7 +66,7 @@ const GeneratePage = () => {
   const getBlockData = async (startblock, endblock) => {
     let response;
     try {
-        response = await ky.get(`http://localhost:3007/blockData/ggTest?startblock=${startblock}&endblock=${endblock}`, {timeout: 180000}).json();
+        response = await ky.get(`http://localhost:3007/blockData/graphGeneration?startblock=${startblock}&endblock=${endblock}`, {timeout: 180000}).json();
         setFetchedStartBlock(startblock);
         setFetchedEndBlock(endblock);
         setBlockData(response);
