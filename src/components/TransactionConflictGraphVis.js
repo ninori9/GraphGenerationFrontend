@@ -95,7 +95,7 @@ const TransactionConflictGraphVis = (props) => {
 
 
   const options = {
-    height: '100%',
+    height: h,
     width: '100%',
     clickToUse: false,
     layout: {
