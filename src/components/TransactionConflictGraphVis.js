@@ -5,6 +5,11 @@ import TransactionDialog from './dialogs/TransactionDialog';
   
   
 const TransactionConflictGraphVis = (props) => {
+  const canvasRef = useRef(null);
+  
+  useEffect(() => {
+    console.log('width', canvasRef.current ? canvasRef.current.offsetWidth : 0);
+  }, [ref.current]);
 
   // Color blocks in different colors
   const blockColors = [
@@ -147,8 +152,8 @@ const TransactionConflictGraphVis = (props) => {
 
 
   return (
-    <div className='border-2 border-solid border-tum w-full h-fit'>
-      <Graph graph={graph} options={options} events={events}  />
+    <div ref={canvasRef} className='border-2 border-solid border-tum w-full h-fit'>
+      <Graph graph={graph} options={options} events={events} />
     </div>
   );
 }
