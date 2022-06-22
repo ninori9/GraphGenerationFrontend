@@ -13,26 +13,37 @@ const TransactionDialog = (props) => {
   let write_keys = [];
   let read_keys = [];
   let ranges = ``;
-
-  for(let i = 0; i<props.transaction.rw_set.length; i++) {
-    if(props.transaction.rw_set[i].namespace === props.transaction.chaincode_spec.chaincode_id.name) {
-      // Add reads
-      for(let j=0; j<props.transaction.rw_set[i].rwset.reads.length; j++) {
-        read_keys.push(props.transaction.rw_set[i].rwset.reads[j].key);
-      }
-      // Add writes
-      for(let j=0; j<props.transaction.rw_set[i].rwset.writes.length; j++) {
-        write_keys.push(props.transaction.rw_set[i].rwset.writes[j].key);
-      }
-      // Add ranges
-      for(let j=0; j<props.transaction.rw_set[i].rwset.range_queries_info.length; j++) {
-        ranges += `(${props.transaction.rw_set[i].rwset.range_queries_info[j].start_key} - ${props.transaction.rw_set[i].rwset.range_queries_info[j].end_key})`;
-        if(j !== props.transaction.rw_set[i].rwset.range_queries_info.length - 1) {
-          ranges += `, `;
+  
+  if(transaction.rw_set !== undefined) {
+    for(let i = 0; i<props.transaction.rw_set.length; i++) {
+      if(props.transaction.rw_set[i].namespace === props.transaction.chaincode_spec.chaincode_id.name) {
+        // Add reads
+        for(let j=0; j<props.transaction.rw_set[i].rwset.reads.length; j++) {
+          read_keys.push(props.transaction.rw_set[i].rwset.reads[j].key);
+          // For performance reasons not all keys need to be processed (can't be displayed anyways)
+          if(j === 25) {
+            break;
+          }
+        }
+        // Add writes
+        for(let j=0; j<props.transaction.rw_set[i].rwset.writes.length; j++) {
+          write_keys.push(props.transaction.rw_set[i].rwset.writes[j].key);
+          // For performance reasons not all keys need to be processed (can't be displayed anyways)
+          if(j === 25) {
+            break;
+          }
+        }
+        // Add ranges
+        for(let j=0; j<props.transaction.rw_set[i].rwset.range_queries_info.length; j++) {
+          ranges += `(${props.transaction.rw_set[i].rwset.range_queries_info[j].start_key} - ${props.transaction.rw_set[i].rwset.range_queries_info[j].end_key})`;
+          if(j !== props.transaction.rw_set[i].rwset.range_queries_info.length - 1) {
+            ranges += `, `;
+          }
         }
       }
     }
   }
+
 
   const get_endorsers_text = function() {
     let endorsers_text = `[`;

@@ -46,7 +46,7 @@ const StartEndBlockForm = (props) => {
         setSubmitting(false);
 
         // reset form;
-        resetForm();
+        // resetForm();
 
         props.onSubmit(values.startblock, values.endblock);
         // TODO: invoke and enable button by setting lock to false once graph generated

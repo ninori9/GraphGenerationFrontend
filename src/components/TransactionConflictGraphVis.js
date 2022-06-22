@@ -15,9 +15,9 @@ const TransactionConflictGraphVis = (props) => {
   const blockColors = [
     '#d4eeee', // Fabric light blue
     '#fbbbb7', // Fabric light
+    '#89c8ff', // TUM light
     '#ffffff', // white
     '#e5e7eb', // Gray-200, see divider color
-    '#89c8ff', // TUM light
   ];
 
   useEffect(() => {
