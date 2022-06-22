@@ -1,4 +1,4 @@
-import React, {useState, componentDidMount, useRef, useEffect} from 'react';
+import React, {useState, useCallback, useRef, useEffect} from 'react';
 import PropTypes from 'prop-types'; 
 import Graph from "react-graph-vis";
   
@@ -69,7 +69,7 @@ const TransactionConflictGraphVis = (props) => {
     return parsedTx;
   });
 
-  const onDoubleClick = (nodes, edges, pointer) => {
+  const onDoubleClick = useCallback((nodes, edges, pointer) => {
     console.log('scale levels', scaleLevels);
     if(nodes.length === 0 && edges.length === 0 && scaleLevels.length > 1) {
       console.log('conditions for moveTo fulfilled - pointer DOM x', pointer.DOM.x);
@@ -86,7 +86,7 @@ const TransactionConflictGraphVis = (props) => {
         setScaleIndex(0);
       }
     }
-  };
+  }, [scaleLevels]);
 
 
   // Method to add curve to bidirected straight edges
