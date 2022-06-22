@@ -14,7 +14,7 @@ const TransactionDialog = (props) => {
   let read_keys = [];
   let ranges = ``;
   
-  if(transaction.rw_set !== undefined) {
+  if(props.transaction.rw_set !== undefined) {
     for(let i = 0; i<props.transaction.rw_set.length; i++) {
       if(props.transaction.rw_set[i].namespace === props.transaction.chaincode_spec.chaincode_id.name) {
         // Add reads
