@@ -4,6 +4,10 @@ import Graph from "react-graph-vis";
   
   
 const TransactionConflictGraphVis = (props) => {
+  const [firstAnimation, setFirstAnimation] = useState(true);
+  const [scaleLevels, setScaleLevels] = useState([]);
+  const [scaleIndex, setScaleIndex] = useState(null);
+
   const graphRef = useRef(null);
 
   // Color blocks in different colors
@@ -16,16 +20,27 @@ const TransactionConflictGraphVis = (props) => {
   ];
 
   useEffect(() => {
-    graphRef.current.Network.moveTo({
-      position: {x:0, y:0},    // position to animate to
-      scale: 1,              // scale to animate to
-      offset: {x:0, y:0},      // offset from the center in DOM pixels (Numbers)
-      animation: {             // animation object, can also be Boolean
-        duration: 1000,                 // animation duration in milliseconds (Number)
-        easingFunction: "easeInOutQuad" // Animation easing function, available are:
-      }                 
-    });
-  }, [])
+    if(firstAnimation) {
+      graphRef.current.Network.fit();
+      const initScale = graphRef.current.Network.getScale();
+      console.log('initial scale', initScale);
+
+      if(initScale === 1) {
+        setScaleLevels([1]);
+      }
+      else if (1 - initScale >= 0.5) {
+        const secondScaleLevel = initScale + ((1 - initScale) / 2)
+        setScaleLevels([initScale, secondScaleLevel, 1]);
+        setScaleIndex(1);
+      }
+      else {
+        setScaleLevels([initScale, 1]);
+        setScaleIndex(1);
+      }
+
+      setFirstAnimation(false);
+    }
+  }, [firstAnimation])
 
   
   // Parse transactions from received input to nodes
@@ -109,7 +124,6 @@ const TransactionConflictGraphVis = (props) => {
   const options = {
     height: h,
     width: '100%',
-    clickToUse: false,
     layout: {
       hierarchical: false
     },
@@ -128,6 +142,9 @@ const TransactionConflictGraphVis = (props) => {
         },
       },
       shape: 'circle',
+    },
+    interaction: {
+      navigationButtons: false,
     }
   };
 
@@ -151,22 +168,39 @@ const TransactionConflictGraphVis = (props) => {
         if(nodes.length === 0 && edges.length !== 0) {
           props.setSelectedEdge(edges[0]);
         }
+      },
+      doubleClick: ({nodes, edges, pointer}) => {
+        if(nodes.length === 0 && edges.length === 0 && scaleLevels.length > 1) {
+          graphRef.current.Network.moveTo({
+            position: {x:pointer.DOM.x, y:pointer.DOM.y},
+            scale: scaleLevels[scaleIndex],
+            offset: {x:0, y:0},
+            animation: {
+              duration: 1000,
+              easingFunction: "easeInOutQuad"
+            }                 
+          });
+          if(scaleIndex === scaleLevels.length -1) {
+            setScaleIndex(0);
+          }
+        }
       }
     },
-    interaction: {
-      navigationButtons: true,
-      keyboard: {
-	enabled: true,
-      }
-    }
   })
 
   const { graph, events } = state;
 
+  console.log('scale levels', scaleLevels);
+  console.log('scale index', scaleIndex);
 
   return (
-    <div className='border-2 border-solid border-tum w-full h-fit'>
-      <Graph ref={graphRef} graph={graph} options={options} events={events} />
+    <div>
+      <div className='flex w-full justify-end'>
+        {scaleLevels.length <= 1 ? <div/> : <p className='text-black-600'>Double click to zoom in and out</p>}
+      </div>
+      <div className='border-2 border-solid border-tum w-full h-fit'>
+        <Graph ref={graphRef} graph={graph} options={options} events={events} />
+      </div>
     </div>
   );
 }
