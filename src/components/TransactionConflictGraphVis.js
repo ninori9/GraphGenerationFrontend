@@ -58,7 +58,7 @@ const TransactionConflictGraphVis = (props) => {
     return parsedTx;
   });
 
-  const onDoubleClick = useCallback((nodes, edges, pointer) => {
+  /*const onDoubleClick = useCallback((nodes, edges, pointer) => {
     console.log('scale levels', scaleLevels);
     if(nodes.length === 0 && edges.length === 0 && scaleLevels.length > 1) {
       console.log('conditions for moveTo fulfilled - pointer DOM x', pointer.DOM.x);
@@ -75,7 +75,7 @@ const TransactionConflictGraphVis = (props) => {
         setScaleIndex(0);
       }
     }
-  }, [scaleLevels]);
+  }, [scaleLevels]);*/
 
 
   // Method to add curve to bidirected straight edges
@@ -186,13 +186,13 @@ const TransactionConflictGraphVis = (props) => {
 
   const { graph, events } = state;
 
-  console.log('scale levels', scaleLevels);
-  console.log('scale index', scaleIndex);
+  //console.log('scale levels', scaleLevels);
+  console.log('init scale', initialScale);
 
   return (
     <div>
       <div className='flex w-full justify-end'>
-        {scaleLevels.length <= 1 ? <div/> : <p className='text-black-600'>Double click to zoom in and out</p>}
+        {initialScale === 1 ? <div/> : <p className='text-black-600'>Double click to zoom in and out</p>}
       </div>
       <div className='border-2 border-solid border-tum w-full h-fit'>
         <Graph ref={graphRef} graph={graph} options={options} events={events} />
