@@ -4,35 +4,8 @@ import Graph from "react-graph-vis";
   
   
 const TransactionConflictGraphVis = (props) => {
-  const [graph, setGraph] = useState(
-    {
-      nodes: parseTransactionsToNodes(props.transactions),
-      edges: editEdges(props.edges),
-    },
-  );
-  const [events, setEvents] = useState(
-    {
-      deselectNode: () => {
-        props.setSelectedTransaction(null);
-      },
-      deselectEdge: () => {
-        props.setSelectedEdge(null);
-      },
-      click: ({nodes, edges}) => {
-        if(nodes.length !== 0) {
-          props.setSelectedTransaction(nodes[0]);
-        }
-        if(nodes.length === 0 && edges.length !== 0) {
-          props.setSelectedEdge(edges[0]);
-        }
-      },
-      doubleClick: onDoubleClick
-    },
-  );
-
   const [firstAnimation, setFirstAnimation] = useState(true);
-  const [scaleLevels, setScaleLevels] = useState([]);
-  const [scaleIndex, setScaleIndex] = useState(null);
+  const [initialScale, setInitialScale] = useState(null);
 
   const graphRef = useRef(null);
 
@@ -49,20 +22,10 @@ const TransactionConflictGraphVis = (props) => {
     if(firstAnimation) {
       const initScale = graphRef.current.Network.getScale();
       console.log('initial scale', initScale);
-
-      if(initScale === 1) {
-        setScaleLevels([1]);
-      }
-      else if (1 - initScale >= 0.5) {
-        const secondScaleLevel = initScale + ((1 - initScale) / 2)
-        setScaleLevels([initScale, secondScaleLevel, 1]);
-        setScaleIndex(1);
-      }
-      else {
-        setScaleLevels([initScale, 1]);
-        setScaleIndex(1);
-      }
-
+      setInitialScale(initScale);
+      
+      //const secondScaleLevel = initScale + ((1 - initScale) / 2)
+        
       setFirstAnimation(false);
     }
   }, [firstAnimation])
@@ -70,7 +33,6 @@ const TransactionConflictGraphVis = (props) => {
   
   // Parse transactions from received input to nodes
   const parseTransactionsToNodes = ((transactions) => {
-    console.log('parse transactions called');
     let parsedTx = [];
 
     let blocks= [];
@@ -118,7 +80,6 @@ const TransactionConflictGraphVis = (props) => {
 
   // Method to add curve to bidirected straight edges
   const editEdges = ((edges) => {
-    console.log('edit edges called');
     let parsedEdges = [];
 
     for(let i=0; i<edges.length; i++) {
@@ -193,6 +154,37 @@ const TransactionConflictGraphVis = (props) => {
       navigationButtons: false,
     }
   };
+
+  const [state, setState] = useState({
+    counter: props.transactions.length,
+    graph: {
+      nodes: parseTransactionsToNodes(props.transactions),
+      edges: editEdges(props.edges),
+    },
+    events: {
+      deselectNode: ({ nodes, edges }) => {
+        props.setSelectedTransaction(null);
+      },
+      deselectEdge: ({ nodes, edges}) => {
+        props.setSelectedEdge(null);
+      },
+      click: ({nodes, edges}) => {
+        if(nodes.length !== 0) {
+          props.setSelectedTransaction(nodes[0]);
+        }
+        if(nodes.length === 0 && edges.length !== 0) {
+          props.setSelectedEdge(edges[0]);
+        }
+      },
+      doubleClick: ({nodes, edges, pointer}) => {
+        const currentScale = graphRef.current.Network.getScale();
+        console.log('initial scale', initialScale);
+        console.log('current scale', currentScale);
+      }
+    },
+  })
+
+  const { graph, events } = state;
 
   console.log('scale levels', scaleLevels);
   console.log('scale index', scaleIndex);
