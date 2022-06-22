@@ -21,7 +21,6 @@ const TransactionConflictGraphVis = (props) => {
 
   useEffect(() => {
     if(firstAnimation) {
-      graphRef.current.Network.fit();
       const initScale = graphRef.current.Network.getScale();
       console.log('initial scale', initScale);
 
