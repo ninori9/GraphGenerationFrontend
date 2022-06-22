@@ -60,7 +60,6 @@ const TransactionDialog = (props) => {
   const title = `Transaction ${props.transaction.tx_number}`;
   const status_color = props.transaction.status === 0 ? 'text-green-800' : 'text-red-800';
   const status_text = `${props.transaction.status} (${tx_codes[props.transaction.status]})`;
-  const endorsement_text = get_endorsers_text();
 
 
   return (
@@ -100,7 +99,7 @@ const TransactionDialog = (props) => {
                     <CategoryDivider/>
                     {/*Chaincode and endorsers*/}
                     <p><b>Chaincode: </b>{`${props.transaction.chaincode_spec.chaincode_id.name}`}</p>
-                    <p><b>Endorsing peers: </b>{`${endorsement_text}`}</p>
+                    {props.transaction.endorsements !== undefined ? <p><b>Endorsing peers: </b>{`${get_endorsers_text()}`}</p> : <p/>}
                     <CategoryDivider/>
                     {/*Status*/}
                     <p className={status_color}><span className='font-bold'>Status: </span><span>{status_text}</span></p>
