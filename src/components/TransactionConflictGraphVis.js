@@ -170,6 +170,7 @@ const TransactionConflictGraphVis = (props) => {
       },
       doubleClick: ({nodes, edges, pointer}) => {
         console.log('doubleClick called');
+        console.log('nodes.length', nodes.length, 'edges.length', edges.length, 'scaleLevels.length', scaleLevels.length);
         if(nodes.length === 0 && edges.length === 0 && scaleLevels.length > 1) {
           console.log('conditions for moveTo fulfilled - pointer DOM x', pointer.DOM.x);
           graphRef.current.Network.moveTo({
