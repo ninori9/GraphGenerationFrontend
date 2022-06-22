@@ -98,7 +98,7 @@ const TransactionDialog = (props) => {
                     <p><b>Transaction number in block: </b>{`${props.transaction.tx_block_number}`}</p>
                     <CategoryDivider/>
                     {/*Chaincode and endorsers*/}
-                    <p><b>Chaincode: </b>{`${props.transaction.chaincode_spec.chaincode_id.name}`}</p>
+                    {props.transaction.chaincode_spec !== undefined ? <p><b>Chaincode: </b>{`${props.transaction.chaincode_spec.chaincode_id.name}`}</p> : <p/>}
                     {props.transaction.endorsements !== undefined ? <p><b>Endorsing peers: </b>{`${get_endorsers_text()}`}</p> : <p/>}
                     <CategoryDivider/>
                     {/*Status*/}
