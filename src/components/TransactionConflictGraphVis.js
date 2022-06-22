@@ -69,6 +69,25 @@ const TransactionConflictGraphVis = (props) => {
     return parsedTx;
   });
 
+  const onDoubleClick = (nodes, edges, pointer) => {
+    console.log('scale levels', scaleLevels);
+    if(nodes.length === 0 && edges.length === 0 && scaleLevels.length > 1) {
+      console.log('conditions for moveTo fulfilled - pointer DOM x', pointer.DOM.x);
+      graphRef.current.Network.moveTo({
+        position: {x:pointer.DOM.x, y:pointer.DOM.y},
+        scale: scaleLevels[scaleIndex],
+        offset: {x:0, y:0},
+        animation: {
+          duration: 1000,
+          easingFunction: "easeInOutQuad"
+        }                 
+      });
+      if(scaleIndex === scaleLevels.length -1) {
+        setScaleIndex(0);
+      }
+    }
+  };
+
 
   // Method to add curve to bidirected straight edges
   const editEdges = ((edges) => {
@@ -169,23 +188,7 @@ const TransactionConflictGraphVis = (props) => {
         }
       },
       doubleClick: ({nodes, edges, pointer}) => {
-        console.log('doubleClick called');
-        console.log('nodes.length', nodes.length, 'edges.length', edges.length, 'scaleLevels.length', scaleLevels.length);
-        if(nodes.length === 0 && edges.length === 0 && scaleLevels.length > 1) {
-          console.log('conditions for moveTo fulfilled - pointer DOM x', pointer.DOM.x);
-          graphRef.current.Network.moveTo({
-            position: {x:pointer.DOM.x, y:pointer.DOM.y},
-            scale: scaleLevels[scaleIndex],
-            offset: {x:0, y:0},
-            animation: {
-              duration: 1000,
-              easingFunction: "easeInOutQuad"
-            }                 
-          });
-          if(scaleIndex === scaleLevels.length -1) {
-            setScaleIndex(0);
-          }
-        }
+        onDoubleClick(nodes, edges, pointer);
       }
     },
   })
