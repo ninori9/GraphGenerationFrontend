@@ -4,8 +4,10 @@ import Graph from "react-graph-vis";
   
   
 const TransactionConflictGraphVis = (props) => {
-  const [firstAnimation, setFirstAnimation] = useState(true);
+
   const [initialScale, setInitialScale] = useState(null);
+
+  const [coordinates, setCoordinates] = useState([]);
 
   const graphRef = useRef(null);
 
@@ -19,16 +21,35 @@ const TransactionConflictGraphVis = (props) => {
   ];
 
   useEffect(() => {
-    if(firstAnimation) {
-      const initScale = graphRef.current.Network.getScale();
-      console.log('initial scale', initScale);
-      setInitialScale(initScale);
+    const initScale = graphRef.current.Network.getScale();
+    console.log('INITIAL SCALE', initScale);
+    setInitialScale(initScale);
+  }, [initialScale]);
+
+
+  useEffect(() => {
+    console.log('inside coordinates useEffect');
+
+    if(coordinates.length > 0 && initialScale !== 1) {
+      const currentScale = graphRef.current.Network.getScale();
       
-      //const secondScaleLevel = initScale + ((1 - initScale) / 2)
-        
-      setFirstAnimation(false);
+      const nextScale = currentScale === 1 ? initialScale 
+        : (1 - currentScale >= 0.5 ? (currentScale + (1 - currentScale) / 2) : 1); 
+
+      console.log('next scale', nextScale);
+
+      graphRef.current.Network.moveTo({
+        position: {x:coordinates[0], y:coordinates[1]},
+        scale: nextScale,
+        offset: {x:0, y:0},
+        animation: {
+          duration: 1000,
+          easingFunction: "easeInOutQuad"
+        }
+      });
+
     }
-  }, [firstAnimation])
+  }, [coordinates]);
 
   
   // Parse transactions from received input to nodes
@@ -57,26 +78,6 @@ const TransactionConflictGraphVis = (props) => {
     }
     return parsedTx;
   });
-
-  /*const onDoubleClick = useCallback((nodes, edges, pointer) => {
-    console.log('scale levels', scaleLevels);
-    if(nodes.length === 0 && edges.length === 0 && scaleLevels.length > 1) {
-      console.log('conditions for moveTo fulfilled - pointer DOM x', pointer.DOM.x);
-      graphRef.current.Network.moveTo({
-        position: {x:pointer.DOM.x, y:pointer.DOM.y},
-        scale: scaleLevels[scaleIndex],
-        offset: {x:0, y:0},
-        animation: {
-          duration: 1000,
-          easingFunction: "easeInOutQuad"
-        }                 
-      });
-      if(scaleIndex === scaleLevels.length -1) {
-        setScaleIndex(0);
-      }
-    }
-  }, [scaleLevels]);*/
-
 
   // Method to add curve to bidirected straight edges
   const editEdges = ((edges) => {
@@ -125,7 +126,7 @@ const TransactionConflictGraphVis = (props) => {
   // Height of graph (minimum 300 or 0 if no transactions; maxiumum 1280 (corresponds to max width)
   const h = `${(props.transactions.length * 32 > 400 || props.transactions.length === 0) ?
     (props.transactions.length * 32 > 1280 ? 1280: props.transactions.length * 32) : 400}px`;
-  console.log('Graph height', h);
+  //console.log('Graph height', h);
 
 
   const options = {
@@ -165,10 +166,10 @@ const TransactionConflictGraphVis = (props) => {
       deselectNode: ({ nodes, edges }) => {
         props.setSelectedTransaction(null);
       },
-      deselectEdge: ({ nodes, edges}) => {
+      deselectEdge: ({ nodes, edges }) => {
         props.setSelectedEdge(null);
       },
-      click: ({nodes, edges}) => {
+      click: ({ nodes, edges }) => {
         if(nodes.length !== 0) {
           props.setSelectedTransaction(nodes[0]);
         }
@@ -176,18 +177,16 @@ const TransactionConflictGraphVis = (props) => {
           props.setSelectedEdge(edges[0]);
         }
       },
-      doubleClick: ({nodes, edges, pointer}) => {
-        const currentScale = graphRef.current.Network.getScale();
-        console.log('initial scale', initialScale);
-        console.log('current scale', currentScale);
+      doubleClick: ({ nodes, edges, pointer}) => {
+        if(nodes.length === 0 && edges.length === 0) {
+          setCoordinates([pointer.canvas.x, pointer.canvas.y]);
+        }
       }
     },
-  })
+  });
 
   const { graph, events } = state;
 
-  //console.log('scale levels', scaleLevels);
-  console.log('init scale', initialScale);
 
   return (
     <div>
