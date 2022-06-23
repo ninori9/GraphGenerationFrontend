@@ -71,8 +71,10 @@ const GeneratePage = () => {
         setFetchingData(false);
     } catch (e) {
         console.log(e);
+        console.log(e.response);
+        console.log(e.response.json());
 
-        if(e.response.json().BallLoadererror === undefined) {
+        if(e.response.json().error === undefined) {
             setError(`Error: ${e.message}`)
         }
         else {
