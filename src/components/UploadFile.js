@@ -1,5 +1,6 @@
 import React, {useState, useRef} from 'react';
 import PropTypes from 'prop-types';
+import LinesEllipsis from 'react-lines-ellipsis'
 
 import graphlogo from './images/logoTest.png'
 import GenerateButton from './buttons/GenerateButton';
