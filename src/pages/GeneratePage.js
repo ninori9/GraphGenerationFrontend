@@ -66,13 +66,11 @@ const GeneratePage = () => {
     let response;
     try {
         response = await ky.get(`http://localhost:3007/blockData/graphGeneration?startblock=${startblock}&endblock=${endblock}`, {timeout: 180000}).json();
-        console.log('Did not catch error')
         setBlockData(response);
         setFetchingData(false);
     } catch (e) {
         console.log(e);
-        const errorBody = e.response.json();
-        console.log(errorBody.value);
+        const errorBody = await e.response.json();
 
         if(errorBody.error === undefined) {
             setError(`Error: ${e.message}`)
