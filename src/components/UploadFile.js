@@ -99,7 +99,7 @@ const UploadFile = (props) => {
                 Upload JSON
             </button>
             <input id='graphFile' ref={fileInputRef} type='file' onChange={handleChange} accept='.json' style={{display:'none'}}></input>
-            {filename !== null ? <p className='text-black-600'>{filename}</p> : <div/>}
+            {filename !== null ? <div className='text-black-600'><LinesEllipsis maxLine='1' text={filename} ellipsis='...' trimRight basedOn='letters'></LinesEllipsis></div> : <div/>}
             {error !== null ? <p className='text-red-600'>{error}</p> : <div/>}
         </div>
 

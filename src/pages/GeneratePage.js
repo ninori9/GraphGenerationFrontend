@@ -72,15 +72,11 @@ const GeneratePage = () => {
     } catch (e) {
         console.log(e);
 
-        console.log(e.response.body);
-        //console.log(e.response.body.json());
-
-        if(e.response.body.error === undefined) {
+        if(e.response.json().BallLoadererror === undefined) {
             setError(`Error: ${e.message}`)
         }
         else {
-            console.log('response body', e.response.body);
-            const errorMessage = `Error: ${e.response.body.error}`;
+            const errorMessage = `Error: ${e.response.json().error}`;
             setError(errorMessage);
         }
         setBlockData(null);
