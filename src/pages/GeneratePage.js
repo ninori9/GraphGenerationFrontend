@@ -72,8 +72,11 @@ const GeneratePage = () => {
     } catch (e) {
         console.log(e);
 
+        console.log(e.response.body);
+        //console.log(e.response.body.json());
+
         if(e.response.body.error === undefined) {
-            setError(`Error: [${e.response.status}: ${e.response.statusText}] - ${e.message}`)
+            setError(`Error: ${e.message}`)
         }
         else {
             console.log('response body', e.response.body);
