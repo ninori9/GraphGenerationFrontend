@@ -15,7 +15,7 @@ const UploadFile = (props) => {
 
     const handleClick = () => {
         setJsonData(null);
-        
+
         // Disable graph in parent
         props.onGenerate(null);
 
@@ -29,8 +29,8 @@ const UploadFile = (props) => {
 
         const uploadedFile = event.target.files[0];
 
-        // Maximum file size is currently approx. 200kb, which is about 10x larger than avg file size
-        if(uploadedFile.size > 200000) {
+        // Maximum file size is currently 5MB
+        if(uploadedFile.size > 5000000) {
             setError('Error: File too big.');
         }
         else if(uploadedFile.type !== "application/json") {

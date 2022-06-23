@@ -18,7 +18,9 @@ const GeneratePage = () => {
   const [fetchedStartBlock, setFetchedStartBlock] = useState(null);
   const [fetchedEndBlock, setFetchedEndBlock] = useState(null);
 
-  const [blockData, setBlockData] = useState({});
+  const [blockData, setBlockData] = useState(null);
+
+  const [error, setError] = useState(null);
 
   // State for showing transaction and edge details dialog
   const [selectedTransaction, setSelectedTransaction] = useState(null);
@@ -32,7 +34,7 @@ const GeneratePage = () => {
   // Get transaction details of selected transaction
   const getSelectedTransaction = () => {
     // If no selected tx return placeholder transaction
-    if(blockData.transactions === null || blockData.transactions.length === 0) {
+    if(blockData.transactions === undefined || blockData.transactions.length === 0) {
         return placeholder_tx;
     }
     else {
@@ -49,7 +51,7 @@ const GeneratePage = () => {
   // Get transaction details of selected edge
   const getSelectedEdge = () => {
     // If no selected edge return placeholder edge
-    if(blockData.edges === null || blockData.edges.length === 0) {
+    if(blockData.edges === undefined || blockData.edges.length === 0) {
         return placeholder_edge;
     }
     else {
@@ -67,13 +69,15 @@ const GeneratePage = () => {
     let response;
     try {
         response = await ky.get(`http://localhost:3007/blockData/graphGeneration?startblock=${startblock}&endblock=${endblock}`, {timeout: 180000}).json();
-        setFetchedStartBlock(startblock);
-        setFetchedEndBlock(endblock);
+        console.log('Did not catch error')
         setBlockData(response);
         setFetchingData(false);
     } catch (e) {
       // TODO: Error handling?
-      console.log(e);
+      console.log('Error', e);
+      setBlockData(null);
+      const errorMessage = `Error: ${e.error}`;
+      setError(errorMessage);
     }
     return response;
   }
@@ -92,7 +96,7 @@ const GeneratePage = () => {
         }
 
         {/* Show graph if requested and loaded*/}
-        {(fetchedStartBlock == null || fetchedEndBlock == null || fetchingData) ?
+        {(blockData === null || fetchingData) ?
             null :
             <div className='w-full'>
                 <GraphHeader startblock={fetchedStartBlock} endblock={fetchedEndBlock} blockData={blockData}/>
@@ -101,6 +105,10 @@ const GeneratePage = () => {
                 <EdgeDialog isOpen={selectedEdge!==null} edge={getSelectedEdge()} setIsOpen={setSelectedEdge}/>
             </div>
         }
+
+        {/* If error occured fetching data, show error */}
+        {error !== null ? <div className='w-full'><p className='pt-4 text-red-600 font-medium text-lg'>{error}</p></div> : null}
+
         <div className='h-12'/>
     </PageLayout>
   );
