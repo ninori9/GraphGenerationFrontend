@@ -15,9 +15,6 @@ const GeneratePage = () => {
   // Flag that is 'true' if fetching in progress
   const [fetchingData, setFetchingData] = useState(false);
 
-  const [fetchedStartBlock, setFetchedStartBlock] = useState(null);
-  const [fetchedEndBlock, setFetchedEndBlock] = useState(null);
-
   const [blockData, setBlockData] = useState(null);
 
   const [error, setError] = useState(null);
@@ -75,10 +72,10 @@ const GeneratePage = () => {
     } catch (e) {
         console.log('In error catch block');
         console.log('Error', e);
-        console.log('Error json', e.json());
+        console.log('Error body', e.body);
         console.log('Error status?', e.status, 'Error message?', e.message);
 
-        if(e.json().error === undefined) {
+        if(e.body.error === undefined) {
             setError('Error: Error occured while fetching blockchain data.')
         }
         else {
@@ -108,7 +105,7 @@ const GeneratePage = () => {
         {(blockData === null || fetchingData) ?
             null :
             <div className='w-full'>
-                <GraphHeader startblock={fetchedStartBlock} endblock={fetchedEndBlock} blockData={blockData}/>
+                <GraphHeader startblock={blockData.attributes.startblock} endblock={blockData.attributes.endblock} blockData={blockData}/>
                 <TransactionConflictGraphVis transactions={blockData.transactions} edges={blockData.edges} setSelectedTransaction={setSelectedTransaction} setSelectedEdge={setSelectedEdge}/>
                 <TransactionDialog isOpen={selectedTransaction!==null} transaction={getSelectedTransaction()} setIsOpen={setSelectedTransaction}/>
                 <EdgeDialog isOpen={selectedEdge!==null} edge={getSelectedEdge()} setIsOpen={setSelectedEdge}/>
