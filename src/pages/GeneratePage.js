@@ -71,14 +71,14 @@ const GeneratePage = () => {
         setFetchingData(false);
     } catch (e) {
         console.log(e);
-        console.log(e.response);
-        console.log(e.response.json());
+        const errorBody = e.response.json();
+        console.log(errorBody.value);
 
-        if(e.response.json().error === undefined) {
+        if(errorBody.error === undefined) {
             setError(`Error: ${e.message}`)
         }
         else {
-            const errorMessage = `Error: ${e.response.json().error}`;
+            const errorMessage = `Error: ${errorBody.error}`;
             setError(errorMessage);
         }
         setBlockData(null);
