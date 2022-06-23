@@ -70,16 +70,14 @@ const GeneratePage = () => {
         setBlockData(response);
         setFetchingData(false);
     } catch (e) {
-        console.log('In error catch block');
-        console.log('Error', e);
-        console.log('Error body', e.body);
-        console.log('Error status?', e.status, 'Error message?', e.message);
+        console.log(e);
 
-        if(e.body.error === undefined) {
-            setError('Error: Error occured while fetching blockchain data.')
+        if(e.response.body.error === undefined) {
+            setError(`Error: [${e.response.status}: ${e.response.statusText}] - ${e.message}`)
         }
         else {
-            const errorMessage = `Error: ${e.error}`;
+            console.log('response body', e.response.body);
+            const errorMessage = `Error: ${e.response.body.error}`;
             setError(errorMessage);
         }
         setBlockData(null);
