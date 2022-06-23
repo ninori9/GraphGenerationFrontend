@@ -75,8 +75,10 @@ const GeneratePage = () => {
     } catch (e) {
         console.log('In error catch block');
         console.log('Error', e);
+        console.log('Error json', e.json());
+        console.log('Error status?', e.status, 'Error message?', e.message);
 
-        if(e.error === undefined) {
+        if(e.json().error === undefined) {
             setError('Error: Error occured while fetching blockchain data.')
         }
         else {
@@ -84,6 +86,7 @@ const GeneratePage = () => {
             setError(errorMessage);
         }
         setBlockData(null);
+        setFetchingData(false);
     }
     return response;
   }
@@ -113,7 +116,7 @@ const GeneratePage = () => {
         }
 
         {/* If error occured fetching data, show error */}
-        {error !== null ? <div className='w-full'><p className='pt-4 text-red-600 font-medium text-lg'>{error}</p></div> : null}
+        {error !== null ? <div className='w-full'><p className='text-red-600 font-semibold text-lg px-4 py-4 text-center'>{error}</p></div> : null}
 
         <div className='h-12'/>
     </PageLayout>
