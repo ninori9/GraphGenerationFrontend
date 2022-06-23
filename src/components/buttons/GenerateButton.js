@@ -5,7 +5,7 @@ const GenerateButton = ({ onClick, isValid, lock }) => {
   
   const style = `appearance-none bg-tum rounded-lg box-border cursor-pointer transition select-none
     flex flex-none flex-row justify-center items-center px-4 py-2
-    text-base text-white font-medium text-center
+    text-base text-white font-medium text-center w-64
     hover:bg-tum-dark hover:outline-none hover:ring-4 hover:ring-fabric hover:ring-opacity-60
     focus:outline-none focus:ring-4 focus:ring-fabric focus:ring-opacity-60
     active:bg-tum-darkest active:outline-none active:ring-4 active:ring-fabric active:ring-opacity-100

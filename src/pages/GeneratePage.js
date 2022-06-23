@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ky from 'ky';
 
 import BallLoader from '../components/loader/BallLoader';
@@ -81,7 +81,7 @@ const GeneratePage = () => {
 
   return (
     <PageLayout>
-        {/* TODO: pass function to invoke*/}
+        {/*Component at top of page (set start block and end block)*/}
         <SetParameters setFetching={fetchingDataFunction} buttonLock={fetchingData} onSubmit={getBlockData}/>
         
         {/* If loading show loader, else show divider*/}

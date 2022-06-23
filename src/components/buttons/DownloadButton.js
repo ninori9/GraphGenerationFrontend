@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 
 const DownloadButton = (props) => {
   const d = new Date();
-  const filename = `b${props.data.attributes.startblock}-${props.data.attributes.endblock}
-    _d${d.getMonth()}-${d.getDay()}-${d.getFullYear()}
-    -t${d.getHours()}-${d.getMinutes()}-${d.getSeconds()}-${d.getMilliseconds()}.json`;
+  const filename = `b${props.data.attributes.startblock}-${props.data.attributes.endblock}_d${d.getMonth()}-${d.getDay()}-${d.getFullYear()}-t${d.getHours()}-${d.getMinutes()}-${d.getSeconds()}-${d.getMilliseconds()}.json`;
 
   const style = `appearance-none bg-fabric rounded-lg box-border cursor-pointer
       flex flex-row flex-none shrink-0 grow-0

@@ -17,14 +17,20 @@ const GraphAttributeDivider = () => {
 const GraphHeader = (props) => {
 
     const getFailureTypeString = function() {
-        let res = `(`;
+        let res = ``;
         for(let i =0; i<props.blockData.attributes.failureTypes.length; i++) {
+            if(i === 0) {
+                res += `(`
+            }
+
             res += `${props.blockData.attributes.failureTypes[i][1]}x ` + `${tx_codes[props.blockData.attributes.failureTypes[i][0]]}`;
             if(i < props.blockData.attributes.failureTypes.length -1) {
                 res += `, `;
             }
+            else {
+                res += `)`;
+            }
         }
-        res += `)`;
         return res;
     };
 
