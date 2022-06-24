@@ -71,7 +71,9 @@ const GeneratePage = () => {
         setFetchingData(false);
     } catch (e) {
         console.log(e);
+        
         const errorBody = await e.response.json();
+        console.log('errorBody', errorBody);
 
         if(errorBody.error === undefined) {
             setError(`Error: ${e.message}`)
