@@ -71,16 +71,24 @@ const GeneratePage = () => {
         setFetchingData(false);
     } catch (e) {
         console.log(e);
-        
-        const errorBody = await e.response.json();
-        console.log('errorBody', errorBody);
 
-        if(errorBody.error === undefined) {
-            setError(`Error: ${e.message}`)
+        // Try to handle error by displaying the custom error message
+        try {
+            // An error may occur at this point
+            const errorBody = await e.response.json();
+            console.log('errorBody', errorBody);
+
+            if(errorBody.error === undefined) {
+                setError(`Error: ${e.message}`)
+            }
+            else {
+                const errorMessage = `Error: ${errorBody.error}`;
+                setError(errorMessage);
+            }
         }
-        else {
-            const errorMessage = `Error: ${errorBody.error}`;
-            setError(errorMessage);
+        // If error can't be parsed display HTTPError message
+        catch(err) {
+            setError(e.message);
         }
         setBlockData(null);
         setFetchingData(false);

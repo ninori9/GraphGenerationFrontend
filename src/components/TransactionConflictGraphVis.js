@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useRef, useEffect} from 'react';
+import React, {useState, useMemo, useRef, useEffect} from 'react';
 import PropTypes from 'prop-types'; 
 import Graph from "react-graph-vis";
   
@@ -53,7 +53,7 @@ const TransactionConflictGraphVis = (props) => {
 
   
   // Parse transactions from received input to nodes
-  const parseTransactionsToNodes = useCallback((transactions) => {
+  const parseTransactionsToNodes = useMemo((transactions) => {
     console.log('Parsing transactions')
 
     let parsedTx = [];
@@ -83,24 +83,24 @@ const TransactionConflictGraphVis = (props) => {
   }, []);
 
   // Method to add curve to bidirected straight edges
-  const editEdges = useCallback((edges) => {
+  const editEdges = useMemo(() => {
     console.log('Parsing edges');
 
     let parsedEdges = [];
 
-    for(let i=0; i<edges.length; i++) {
+    for(let i=0; i<props.edges.length; i++) {
       // If edge already exists "the other way around", add curve
-      if(edges.filter(edge => (edge.from === edges[i].to && edge.to === edges[i].from)).length > 0) {
+      if(props.edges.filter(edge => (edge.from === edges[i].to && edge.to === edges[i].from)).length > 0) {
         parsedEdges.push(
           {
-            id: edges[i].edge_number,
-            from: edges[i].from,
-            to: edges[i].to,
+            id: props.edges[i].edge_number,
+            from: props.edges[i].from,
+            to: props.edges[i].to,
             color: {
-              color: edges[i].reason_for_failure? '#991b1b' : '#000000',
+              color: props.edges[i].reason_for_failure? '#991b1b' : '#000000',
               highlight: '#0064BD',
             },
-            width: edges[i].reason_for_failure? 3 : 2,
+            width: props.edges[i].reason_for_failure? 3 : 2,
             smooth: {
               enabled: true,
               type: "curvedCW",
@@ -112,20 +112,20 @@ const TransactionConflictGraphVis = (props) => {
       else {
         parsedEdges.push(
           {
-            id: edges[i].edge_number,
-            from: edges[i].from,
-            to: edges[i].to,
+            id: props.edges[i].edge_number,
+            from: props.edges[i].from,
+            to: props.edges[i].to,
             color: {
-              color: edges[i].reason_for_failure? '#991b1b' : '#000000',
+              color: props.edges[i].reason_for_failure? '#991b1b' : '#000000',
               highlight: '#0064BD',
             },
-            width: edges[i].reason_for_failure? 3 : 2,
+            width: props.edges[i].reason_for_failure? 3 : 2,
           }
         );
       }
     }
     return parsedEdges;
-  }, []);
+  }, [props.edges]);
   
 
   // Height of graph (minimum 300 or 0 if no transactions; maxiumum 1280 (corresponds to max width)
@@ -165,7 +165,7 @@ const TransactionConflictGraphVis = (props) => {
     counter: props.transactions.length,
     graph: {
       nodes: parseTransactionsToNodes(props.transactions),
-      edges: editEdges(props.edges),
+      edges: editEdges(),
     },
     events: {
       deselectNode: ({ nodes, edges }) => {
