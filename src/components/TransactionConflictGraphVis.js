@@ -90,7 +90,7 @@ const TransactionConflictGraphVis = (props) => {
 
     for(let i=0; i<props.edges.length; i++) {
       // If edge already exists "the other way around", add curve
-      if(props.edges.filter(edge => (edge.from === edges[i].to && edge.to === edges[i].from)).length > 0) {
+      if(props.edges.filter(edge => (edge.from === props.edges[i].to && edge.to === props.edges[i].from)).length > 0) {
         parsedEdges.push(
           {
             id: props.edges[i].edge_number,
