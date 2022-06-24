@@ -63,6 +63,7 @@ const GeneratePage = () => {
   };
 
   const getBlockData = async (startblock, endblock) => {
+    setError(null);
     let response;
     try {
         response = await ky.get(`http://localhost:3007/blockData/graphGeneration?startblock=${startblock}&endblock=${endblock}`, {timeout: 180000}).json();
@@ -102,7 +103,7 @@ const GeneratePage = () => {
         {(blockData === null || fetchingData) ?
             null :
             <div className='w-full'>
-                <GraphHeader startblock={blockData.attributes.startblock} endblock={blockData.attributes.endblock} blockData={blockData}/>
+                <GraphHeader startblock={parseInt(blockData.attributes.startblock)} endblock={parseInt(blockData.attributes.endblock)} blockData={blockData}/>
                 <TransactionConflictGraphVis transactions={blockData.transactions} edges={blockData.edges} setSelectedTransaction={setSelectedTransaction} setSelectedEdge={setSelectedEdge}/>
                 <TransactionDialog isOpen={selectedTransaction!==null} transaction={getSelectedTransaction()} setIsOpen={setSelectedTransaction}/>
                 <EdgeDialog isOpen={selectedEdge!==null} edge={getSelectedEdge()} setIsOpen={setSelectedEdge}/>
