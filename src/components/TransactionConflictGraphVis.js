@@ -53,16 +53,14 @@ const TransactionConflictGraphVis = (props) => {
 
   
   // Parse transactions from received input to nodes
-  const parseTransactionsToNodes = ((transactions) => {
+  const parseTransactionsToNodes = useCallback((transactions) => {
+    console.log('Parsing transactions')
+
     let parsedTx = [];
 
     let blocks= [];
 
     for(let i = 0; i<transactions.length; i++) {
-      // For testing puroposes: (TODO: Remove)
-      if(transactions[i].tx_number === 324 || transactions[i].tx_number === 311 || transactions[i].tx_number === 302 || transactions[i].tx_number === 331 || transactions[i].tx_number === 300 || transactions[i].tx_number === 326 || transactions[i].tx_number === 328) {
-        console.log(`RW SET for: Transaction ${transactions[i].tx_number}`, transactions[i].rw_set);
-      }
 
       if(! blocks.includes(transactions[i].block_number)) {
         blocks.push(transactions[i].block_number);
@@ -82,10 +80,12 @@ const TransactionConflictGraphVis = (props) => {
       );
     }
     return parsedTx;
-  });
+  }, []);
 
   // Method to add curve to bidirected straight edges
-  const editEdges = ((edges) => {
+  const editEdges = useCallback((edges) => {
+    console.log('Parsing edges');
+
     let parsedEdges = [];
 
     for(let i=0; i<edges.length; i++) {
@@ -125,7 +125,7 @@ const TransactionConflictGraphVis = (props) => {
       }
     }
     return parsedEdges;
-  });
+  }, []);
   
 
   // Height of graph (minimum 300 or 0 if no transactions; maxiumum 1280 (corresponds to max width)
