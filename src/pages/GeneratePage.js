@@ -88,7 +88,7 @@ const GeneratePage = () => {
         }
         // If error can't be parsed display HTTPError message
         catch(err) {
-            setError(e.message);
+            setError(`Error: ${e.message}`);
         }
         setBlockData(null);
         setFetchingData(false);

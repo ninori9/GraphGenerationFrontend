@@ -53,34 +53,35 @@ const TransactionConflictGraphVis = (props) => {
 
   
   // Parse transactions from received input to nodes
-  const parseTransactionsToNodes = useMemo((transactions) => {
+  const parseTransactionsToNodes = useMemo(() => {
     console.log('Parsing transactions')
 
     let parsedTx = [];
 
     let blocks= [];
 
-    for(let i = 0; i<transactions.length; i++) {
+    for(let i = 0; i<props.transactions.length; i++) {
 
-      if(! blocks.includes(transactions[i].block_number)) {
-        blocks.push(transactions[i].block_number);
+      if(! blocks.includes(props.transactions[i].block_number)) {
+        blocks.push(props.transactions[i].block_number);
       }
 
       parsedTx.push(
         {
-          id: transactions[i].tx_number,
-          label: `Tx ${transactions[i].tx_number}`,
+          id: props.transactions[i].tx_number,
+          label: `Tx ${props.transactions[i].tx_number}`,
           color: {
             // Border dark red (red-800) if transaction failed
-            border: transactions[i].status === 0 ? '#000000' : '#991b1b',
-            background: blockColors[blocks.indexOf(transactions[i].block_number) % 5],
+            border: props.transactions[i].status === 0 ? '#000000' : '#991b1b',
+            background: blockColors[blocks.indexOf(props.transactions[i].block_number) % 5],
           },
-          borderWidth: transactions[i].status === 0 ? 2 : 4,
+          borderWidth: props.transactions[i].status === 0 ? 2 : 4,
         }
       );
     }
     return parsedTx;
-  }, []);
+  }, [props.transactions]);
+
 
   // Method to add curve to bidirected straight edges
   const editEdges = useMemo(() => {
@@ -164,7 +165,7 @@ const TransactionConflictGraphVis = (props) => {
   const [state, setState] = useState({
     counter: props.transactions.length,
     graph: {
-      nodes: parseTransactionsToNodes(props.transactions),
+      nodes: parseTransactionsToNodes(),
       edges: editEdges(),
     },
     events: {
