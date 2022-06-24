@@ -165,8 +165,8 @@ const TransactionConflictGraphVis = (props) => {
   const [state, setState] = useState({
     counter: props.transactions.length,
     graph: {
-      nodes: parseTransactionsToNodes(),
-      edges: editEdges(),
+      nodes: parseTransactionsToNodes,
+      edges: editEdges,
     },
     events: {
       deselectNode: ({ nodes, edges }) => {
