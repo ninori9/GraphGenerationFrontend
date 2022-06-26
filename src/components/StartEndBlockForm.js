@@ -1,4 +1,4 @@
-import { React, useEffect, useRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types'; 
 
 /* Input validation with Formik library and Yup */
@@ -13,16 +13,16 @@ const StartEndBlockForm = (props) => {
 
   return (
     <Formik
-      /* Definition of initial values  */
+      // Definition of initial values
       initialValues={{
         startblock: 0,
         endblock: 0,
       }}
 
-      /* 'Ensures that form values can be dynamically injected, e.g. from an API */
+      // 'Ensures that form values can be dynamically injected, e.g. from an API (not really needed in this case)
       enableReinitialize
 
-      /* Schema to validate input fields and their error messages; */
+      // Schema to validate input fields and their error messages;
       validationSchema = {
         Yup.object({
           startblock: Yup.number('Please enter a valid number.')
@@ -38,18 +38,18 @@ const StartEndBlockForm = (props) => {
             .required('This field is required.')
       })}
 
+      // Function invoked when form submitted (by clicking on the generate button)
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         // Disable button, make loader appear
-        await props.setFetching();
+        await props.setFetching(true);
 
-        // finish cycle
+        // Finish cycle
         setSubmitting(false);
 
-        // reset form;
+        // Reset form
         // resetForm();
 
         props.onSubmit(values.startblock, values.endblock);
-        // TODO: invoke and enable button by setting lock to false once graph generated
       }}>
 
 

@@ -8,13 +8,25 @@ import GenerateButton from './buttons/GenerateButton';
 
 
 const UploadFile = (props) => {
+    // File name of uploaded file
     const [filename, setFilename] = useState(null);
+
+    // Error detected for uploaded file
     const [error, setError] = useState(null);
+
+    // Data contained in uploaded file
     const [jsonData, setJsonData] = useState(null);
 
+    // Generate button lock
+    const [buttonLock, setButtonLock] = useState(true);
+
+    // Reference to hidden input component
     const fileInputRef = useRef(null);
 
+
+    // Method called when upload button is clicked
     const handleClick = () => {
+        // Prior data is removed
         setJsonData(null);
 
         // Disable graph in parent
@@ -22,18 +34,20 @@ const UploadFile = (props) => {
 
         setFilename(null);
         setError(null);
+        // Further processing is handled by the hidden input component
         fileInputRef.current.click();
     };
 
     const handleChange = event => {
+        // File read by file reader
         const fr = new FileReader();
-
         const uploadedFile = event.target.files[0];
 
         // Maximum file size is currently 5MB
         if(uploadedFile.size > 5000000) {
             setError('Error: File too big.');
         }
+        // File type must be .json
         else if(uploadedFile.type !== "application/json") {
             setError('Error: The uploaded file has a wrong type.');
         }
@@ -42,28 +56,37 @@ const UploadFile = (props) => {
             fr.readAsText(uploadedFile);
 
             fr.onload = e => {
-                const object = JSON.parse(e.target.result);
-                if(! verifyJson(object)) {
-                    setError('Error: File does not have the required strucure.')
-                }
-                else {
-                    setJsonData(object);
+                try {
+                    // Parsing and verifying basic structure of file
+                    const object = JSON.parse(e.target.result);
+                    if(! verifyJson(object)) {
+                        setError('Error: File does not have the required strucure.')
+                    }
+                    else {
+                        // If all checks pass, set data and unlock generate button
+                        setButtonLock(false);
+                        setJsonData(object);
+                    }
+                } catch(error) {
+                    // Could not parse JSON file
+                    setError('Error: Could not parse the provided file.');
                 }
             }
         }
     };
 
 
+    // Verify basic structure of uploaded file
     const verifyJson = (json) => {
-        // Verify basic structure
         return (json.attributes !== undefined && json.edges !== undefined && Array.isArray(json.edges) && json.transactions !== undefined && Array.isArray(json.transactions) && 
-            json.attributes.startblock !== undefined && parseInt(json.attributes.startblock) !== NaN && json.attributes.endblock !== undefined && parseInt(json.attributes.endblock) !== NaN &&
+            json.attributes.startblock !== undefined && ! isNaN(parseInt(json.attributes.startblock)) && json.attributes.endblock !== undefined && ! isNaN(parseInt(json.attributes.endblock)) &&
             json.attributes.serializable !== undefined && json.attributes.needToAbort !== undefined &&
             json.attributes.conflicts !== undefined && json.attributes.conflictsLeadingToFailure !== undefined && json.attributes.transactions !== undefined &&
             json.attributes.totalFailures !== undefined && json.attributes.failureTypes !== undefined && Array.isArray(json.attributes.failureTypes)
         );
     }
 
+    // Upload button style
     const buttonStyle = `appearance-none bg-fabric rounded-md box-border cursor-pointer
         flex flex-row flex-none shrink-0 grow-0
         text-white font-medium text-base text-center px-4 py-2 mb-1 mt-2
@@ -94,18 +117,22 @@ const UploadFile = (props) => {
 
         {/* Upload file button */}
         <div className='flex flex-col items-center pb-4'>
+            {/*Upload button*/}
             <button 
                 className={buttonStyle}
                 onClick={handleClick}>
                 Upload JSON
             </button>
+            {/*Input component (not displayed, but handles logic related to upload)*/}
             <input id='graphFile' ref={fileInputRef} type='file' onChange={handleChange} accept='.json' style={{display:'none'}}></input>
+            {/*File name (if present)*/}
             {filename !== null ? <div className='text-black-600'><LinesEllipsis maxLine='1' text={filename} ellipsis='...' trimRight basedOn='letters'></LinesEllipsis></div> : <div/>}
+            {/*Error (if present)*/}
             {error !== null ? <p className='text-red-600'>{error}</p> : <div/>}
         </div>
 
         {/* Generate button */}
-        <GenerateButton isValid={error === null && filename !== null} onClick={jsonData !== null ? () => { props.onGenerate(jsonData); } : () => {}} lock={false}/>
+        <GenerateButton isValid={error === null && filename !== null} onClick={jsonData !== null ? () => { props.onGenerate(jsonData); setButtonLock(true); } : () => {}} lock={buttonLock}/>
       </div>
     );
 };

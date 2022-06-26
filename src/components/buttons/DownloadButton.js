@@ -2,14 +2,13 @@ import React from "react";
 import PropTypes from 'prop-types'; 
 
 const DownloadButton = (props) => {
+  // .json file name based on block numbers and data
   const d = new Date();
   const filename = `b${props.data.attributes.startblock}-${props.data.attributes.endblock}_d${d.getMonth()}-${d.getDay()}-${d.getFullYear()}-t${d.getHours()}-${d.getMinutes()}-${d.getSeconds()}-${d.getMilliseconds()}.json`;
 
   const style = `appearance-none bg-fabric rounded-lg box-border cursor-pointer
-      flex flex-row flex-none shrink-0 grow-0
-      text-white font-medium text-base text-center px-4 py-2 mb-4
-      hover:ring-4 hover:ring-tum hover:ring-opacity-60
-      focus:ring-4 focus:outline-none focus:ring-tum focus:ring-opacity-60
+      flex flex-row flex-none shrink-0 grow-0 text-white font-medium text-base text-center px-4 py-2 mb-4
+      hover:ring-4 hover:ring-tum hover:ring-opacity-60 focus:ring-4 focus:outline-none focus:ring-tum focus:ring-opacity-60
       font-semibold text-sm text-center inline-flex items-center`;
 
   return (

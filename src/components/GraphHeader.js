@@ -5,6 +5,7 @@ import DownloadButton from './buttons/DownloadButton';
 import { tx_codes } from '../utils/Utils';
 
 
+// Divider for different attributes of the transaction conflict graph
 const GraphAttributeDivider = () => {
   return (
     <div className="w-full">
@@ -16,6 +17,7 @@ const GraphAttributeDivider = () => {
 
 const GraphHeader = (props) => {
 
+    // Return string representation of different failure types and amounts
     const getFailureTypeString = function() {
         let res = ``;
         for(let i =0; i<props.blockData.attributes.failureTypes.length; i++) {
@@ -23,7 +25,7 @@ const GraphHeader = (props) => {
                 res += `(`
             }
 
-            res += `${props.blockData.attributes.failureTypes[i][1]}x ` + `${tx_codes[props.blockData.attributes.failureTypes[i][0]]}`;
+            res += `${props.blockData.attributes.failureTypes[i][1]}x ${tx_codes[props.blockData.attributes.failureTypes[i][0]]}`;
             if(i < props.blockData.attributes.failureTypes.length -1) {
                 res += `, `;
             }
@@ -34,6 +36,7 @@ const GraphHeader = (props) => {
         return res;
     };
 
+    // Get string representation of transactions that should be aborted to achieve serializability
     const getTransactionsToAbortString = function() {
         let str = ``;
         for(let i = 0; i<props.blockData.attributes.needToAbort.length; i++) {
@@ -51,22 +54,26 @@ const GraphHeader = (props) => {
         return str;
     };
 
-
+    // Heading of graph
     const heading = props.startblock === props.endblock ? `Transaction conflict graph for block ${props.startblock}` : `Transaction conflict graph for blocks ${props.startblock} to ${props.endblock}`;
 
+    // Serializability text and text color
     const serializable = `The given set of transactions is ${props.blockData.attributes.serializable ? '' : 'not '}serializable`;
     const serializableStyle = ! props.blockData.attributes.serializable? 'text-red-900' : 'text-green-900';
-
     const abortedTxText = getTransactionsToAbortString();
     const abortText = `${props.blockData.attributes.needToAbort.length} transaction${props.blockData.attributes.needToAbort.length === 1 ? '' : 's'}${abortedTxText} need${props.blockData.attributes.needToAbort.length === 1 ? 's' : ''} to be aborted to achieve serializability`;
 
+    // Failure rate and failure text
     const failureRate = (props.blockData.attributes.totalFailures/props.blockData.attributes.transactions * 100).toFixed(2);
     const failureTypeString = getFailureTypeString();
 
+    // Amount of successful transactions
     const successfulTx = props.blockData.attributes.transactions - props.blockData.attributes.totalFailures;
+
 
     return (
       <div className="w-full flex flex-col flex-nowrap space-y-2">
+        {/* Heading and download button */}
         <div className="w-full flex flex-col justify-center sm:flex-row sm:justify-between sm:space-y-0 flex-nowrap items-center">
             <div className="w-full text-xl font-semibold text-black-800 mb-4">
                 {heading}
@@ -74,17 +81,21 @@ const GraphHeader = (props) => {
             <DownloadButton data={props.blockData}/>
         </div>
 
+        {/* List of attributes */}
         <ul className="list-disc pl-8 pr-8 pb-8 font-semibold text-lg text-black-800">
+            {/*Total, successful and failed transactions*/}
             <li>{`Total transactions: ${props.blockData.attributes.transactions}`}</li>
             <li className='text-green-800'>{`Successful transactions: ${successfulTx}`}</li>
             <li className='text-red-800'><span>{`Failed transactions: ${props.blockData.attributes.totalFailures} `}</span><span className='font-medium'>{`${failureTypeString}`}</span></li>
             <li className='text-red-800'>{`Failure rate: ${failureRate}%`}</li>
             <GraphAttributeDivider/>
+            {/*Conflicts between transactions*/}
             <li>
                 <span>{`Conflicts between transactions: ${props.blockData.attributes.conflicts} `}</span>
-                <span className={`${props.blockData.attributes.conflictsLeadingToFailure == 0 ? `text-green-800` : `text-red-800`} font-medium`}>{`(${props.blockData.attributes.conflictsLeadingToFailure} conflicts leading to transaction failure)`}</span>
+                <span className={`${props.blockData.attributes.conflictsLeadingToFailure === 0 ? `text-green-800` : `text-red-800`} font-medium`}>{`(${props.blockData.attributes.conflictsLeadingToFailure} conflicts leading to transaction failure)`}</span>
             </li>
             <GraphAttributeDivider/>
+            {/*Serializability attributes*/}
             <li className={serializableStyle}>{serializable}</li>
             <li className='text-black-800 font-medium'> {abortText}</li>
         </ul>

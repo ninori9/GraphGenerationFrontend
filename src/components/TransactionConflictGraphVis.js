@@ -20,15 +20,29 @@ const TransactionConflictGraphVis = (props) => {
     '#e5e7eb', // Gray-200, see divider color
   ];
 
+
+  // If transactions or edges could not be parsed correctly, lift error state up to parent component (page)
   useEffect(() => {
-    const initScale = graphRef.current.Network.getScale();
-    console.log('INITIAL SCALE', initScale);
-    setInitialScale(initScale);
+    if((parseTransactionsToNodes === false || editEdges === false) && props.setError !== undefined && props.setError !== null) {
+      props.setError('Error: Strucure check failed - could not parse the provided transactions and edges.');
+    }
+    else if(props.setRenderHeader !== undefined && props.setRenderHeader !== null) {
+      props.setRenderHeader(true);
+    }
+  }, [])
+
+
+  // Use effect to determine the initial scale of the graph
+  useEffect(() => {
+    if(graphRef !== null && graphRef.current !== undefined && graphRef.current !== null) {
+      const initScale = graphRef.current.Network.getScale();
+      setInitialScale(initScale);
+    }
   }, [initialScale]);
 
 
+  // Use effect triggered by double clicking on graph (sets coordinates state) --> determine next scale to anmiate to and animate to it
   useEffect(() => {
-    console.log('inside coordinates useEffect');
 
     if(coordinates.length > 0 && initialScale !== 1) {
       const currentScale = graphRef.current.Network.getScale();
@@ -36,7 +50,6 @@ const TransactionConflictGraphVis = (props) => {
       const nextScale = currentScale === 1 ? initialScale 
         : (1 - currentScale >= 0.5 ? (currentScale + (1 - currentScale) / 2) : 1); 
 
-      console.log('next scale', nextScale);
 
       graphRef.current.Network.moveTo({
         position: {x:coordinates[0], y:coordinates[1]},
@@ -52,15 +65,19 @@ const TransactionConflictGraphVis = (props) => {
   }, [coordinates]);
 
   
-  // Parse transactions from received input to nodes
+  // Parse transactions from received input to nodes, see https://visjs.github.io/vis-network/docs/network/nodes.html
   const parseTransactionsToNodes = useMemo(() => {
-    console.log('Parsing transactions')
-
     let parsedTx = [];
 
     let blocks= [];
 
     for(let i = 0; i<props.transactions.length; i++) {
+      // Structure validation (checking all accessed attributes) --> required for uploaded json files 
+      if(props.transactions[i].block_number === undefined || isNaN(props.transactions[i].block_number) || props.transactions[i].tx_number === undefined || 
+        isNaN(props.transactions[i].tx_number) || props.transactions[i].status === undefined || isNaN(props.transactions[i].status)) {
+        
+        return false;
+      }
 
       if(! blocks.includes(props.transactions[i].block_number)) {
         blocks.push(props.transactions[i].block_number);
@@ -83,13 +100,17 @@ const TransactionConflictGraphVis = (props) => {
   }, [props.transactions]);
 
 
-  // Method to add curve to bidirected straight edges
+  // Parse and validate edges, add curve to bidirected straight edge, see https://visjs.github.io/vis-network/docs/network/edges.html
   const editEdges = useMemo(() => {
-    console.log('Parsing edges');
-
     let parsedEdges = [];
 
     for(let i=0; i<props.edges.length; i++) {
+      // Structure check, required for uploaded json files
+      if(props.edges[i].from === undefined || isNaN(props.edges[i].from) || props.edges[i].to === undefined || isNaN(props.edges[i].to) || 
+        props.edges[i].edge_number === undefined || props.edges[i].reason_for_failure === undefined) {
+        return false;
+      }
+
       // If edge already exists "the other way around", add curve
       if(props.edges.filter(edge => (edge.from === props.edges[i].to && edge.to === props.edges[i].from)).length > 0) {
         parsedEdges.push(
@@ -129,12 +150,12 @@ const TransactionConflictGraphVis = (props) => {
   }, [props.edges]);
   
 
-  // Height of graph (minimum 300 or 0 if no transactions; maxiumum 1280 (corresponds to max width)
-  const h = `${(props.transactions.length * 32 > 400 || props.transactions.length === 0) ?
-    (props.transactions.length * 32 > 1280 ? 1280: props.transactions.length * 32) : 400}px`;
-  //console.log('Graph height', h);
+  // Height of graph (24px per additional tx, minimum 400 or 0 if no transactions; maxiumum 1280 (corresponds to max width)
+  const h = `${(props.transactions.length * 24 > 400 || props.transactions.length === 0) ?
+    (props.transactions.length * 24 > 1280 ? 1280: props.transactions.length * 24) : 400}px`;
 
 
+  // Graph options, see https://visjs.github.io/vis-network/docs/network/#options
   const options = {
     height: h,
     width: '100%',
@@ -157,10 +178,8 @@ const TransactionConflictGraphVis = (props) => {
       },
       shape: 'circle',
     },
-    interaction: {
-      navigationButtons: false,
-    }
   };
+
 
   const [state, setState] = useState({
     counter: props.transactions.length,
@@ -169,13 +188,14 @@ const TransactionConflictGraphVis = (props) => {
       edges: editEdges,
     },
     events: {
-      deselectNode: ({ nodes, edges }) => {
+      deselectNode: () => {
         props.setSelectedTransaction(null);
       },
-      deselectEdge: ({ nodes, edges }) => {
+      deselectEdge: () => {
         props.setSelectedEdge(null);
       },
       click: ({ nodes, edges }) => {
+        // Clicking on a node or edge should open the corresponding dialog
         if(nodes.length !== 0) {
           props.setSelectedTransaction(nodes[0]);
         }
@@ -184,6 +204,7 @@ const TransactionConflictGraphVis = (props) => {
         }
       },
       doubleClick: ({ nodes, edges, pointer}) => {
+        // Zoom on double click (by setting coordinates state, zooming done in corresponding useEffect)
         if(nodes.length === 0 && edges.length === 0) {
           setCoordinates([pointer.canvas.x, pointer.canvas.y]);
         }
@@ -194,16 +215,23 @@ const TransactionConflictGraphVis = (props) => {
   const { graph, events } = state;
 
 
-  return (
-    <div>
-      <div className='flex w-full justify-end'>
-        {initialScale === 1 ? <div/> : <p className='text-black-600'>Double click to zoom in and out</p>}
+  // If transactions could not be parsed, return empty div
+  if(parseTransactionsToNodes === false || editEdges === false) {
+    return <div/>;
+  }
+  // Else return graph
+  else {
+    return (
+      <div>
+        <div className='flex w-full justify-end'>
+          {initialScale === 1 ? <div/> : <p className='text-black-600'>Double click to zoom in and out</p>}
+        </div>
+        <div className='border-2 border-solid border-tum w-full h-fit'>
+          <Graph ref={graphRef} graph={graph} options={options} events={events} />
+        </div>
       </div>
-      <div className='border-2 border-solid border-tum w-full h-fit'>
-        <Graph ref={graphRef} graph={graph} options={options} events={events} />
-      </div>
-    </div>
-  );
+    );
+  }
 }
 
 

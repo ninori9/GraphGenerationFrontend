@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Header from './Header';
 
 const PageLayout = ({ children }) => {
+  // Page layout wrapper for all pages (includes header, horizontal spacing and child page component)
   return (
     <div className="flex flex-col flex-nowrap items-center w-full min-h-screen">
       <Header />

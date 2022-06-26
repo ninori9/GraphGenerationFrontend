@@ -15,8 +15,10 @@ const GeneratePage = () => {
   // Flag that is 'true' if fetching in progress
   const [fetchingData, setFetchingData] = useState(false);
 
+  // Parsed block data obtained from the back end (consists of transactions and edges)
   const [blockData, setBlockData] = useState(null);
 
+  // Error that may have occured during the fetch process
   const [error, setError] = useState(null);
 
   // State for showing transaction and edge details dialog
@@ -24,11 +26,7 @@ const GeneratePage = () => {
   const [selectedEdge, setSelectedEdge] = useState(null);
 
 
-  const fetchingDataFunction = () => {
-      setFetchingData(true);
-  }
-
-  // Get transaction details of selected transaction
+  // Get transaction details of selected transaction (for dialog)
   const getSelectedTransaction = () => {
     // If no selected tx return placeholder transaction
     if(blockData.transactions === undefined || blockData.transactions.length === 0) {
@@ -45,7 +43,7 @@ const GeneratePage = () => {
     }
   };
 
-  // Get transaction details of selected edge
+  // Get transaction details of selected edge (for dialog)
   const getSelectedEdge = () => {
     // If no selected edge return placeholder edge
     if(blockData.edges === undefined || blockData.edges.length === 0) {
@@ -62,11 +60,12 @@ const GeneratePage = () => {
     }
   };
 
+  // Method for fetching the data from the backend
   const getBlockData = async (startblock, endblock) => {
     setError(null);
     let response;
     try {
-        response = await ky.get(`http://localhost:3007/blockData/graphGeneration?startblock=${startblock}&endblock=${endblock}`, {timeout: 180000}).json();
+        response = await ky.get(`http://localhost:3007/blockData/ggTest?startblock=${startblock}&endblock=${endblock}`, {timeout: 180000}).json();
         setBlockData(response);
         setFetchingData(false);
     } catch (e) {
@@ -76,7 +75,6 @@ const GeneratePage = () => {
         try {
             // An error may occur at this point
             const errorBody = await e.response.json();
-            console.log('errorBody', errorBody);
 
             if(errorBody.error === undefined) {
                 setError(`Error: ${e.message}`)
@@ -100,7 +98,7 @@ const GeneratePage = () => {
   return (
     <PageLayout>
         {/*Component at top of page (set start block and end block)*/}
-        <SetParameters setFetching={fetchingDataFunction} buttonLock={fetchingData} onSubmit={getBlockData}/>
+        <SetParameters setFetching={setFetchingData} buttonLock={fetchingData} onSubmit={getBlockData}/>
         
         {/* If loading show loader, else show divider*/}
         {fetchingData ? <BallLoader/> :
