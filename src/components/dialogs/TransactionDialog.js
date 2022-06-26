@@ -155,7 +155,7 @@ const TransactionDialog = (props) => {
                       <CategoryDivider/>
 
                       {/*Class and read/write sets*/}
-                      <p className='pb-1'><b>Transaction class: </b>{`${props.transaction.class}`}</p>
+                      <p className='pb-1'><b>Transaction class: </b>{`${props.transaction.class === undefined ? `CONFIG` : props.transaction.class}`}</p>
                       {/*Range reads (If present)*/}
                       {props.transaction.class === 'Range Query' ? <div className={`flex items-start ${getReadWriteKeys[0].length > 0 || getReadWriteKeys[1].length > 0 ? `pb-1` : ``}`}><span className='font-bold pr-2'>Read range: </span><LinesEllipsis maxLine='2' text={getReadWriteKeys[2]} ellipsis='...' trimRight basedOn='letters'></LinesEllipsis></div> : <div/>}
                       {/*Reads (If present)*/}
