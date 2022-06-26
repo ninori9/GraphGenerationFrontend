@@ -97,21 +97,26 @@ const TransactionDialog = (props) => {
 
   // Return text representation of endorsements
   const get_endorsers_text = useMemo(() => {
-    let endorsers_text = `[`;
-    for(let i=0; i<props.transaction.endorsements.length; i++) {
-
-      // Validate structure of endorsement entry
-      if(props.transaction.endorsements[i].endorser === undefined || props.transaction.endorsements[i].endorser.Mspid === undefined) {
-        return false;
-      }
-
-      endorsers_text += `${props.transaction.endorsements[i].endorser.Mspid}`
-      if(i < props.transaction.endorsements.length - 1) {
-        endorsers_text += `, `
-      }
+    if(props.transaction.endorsements === undefined || ! Array.isArray(props.transaction.endorsements)) {
+      return false;
     }
-    endorsers_text += `]`;
-    return endorsers_text;
+    else {
+      let endorsers_text = `[`;
+      for(let i=0; i<props.transaction.endorsements.length; i++) {
+
+        // Validate structure of endorsement entry
+        if(props.transaction.endorsements[i].endorser === undefined || props.transaction.endorsements[i].endorser.Mspid === undefined) {
+          return false;
+        }
+
+        endorsers_text += `${props.transaction.endorsements[i].endorser.Mspid}`
+        if(i < props.transaction.endorsements.length - 1) {
+          endorsers_text += `, `
+        }
+      }
+      endorsers_text += `]`;
+      return endorsers_text;
+    }
   }, [props.transaction]);
 
 
@@ -168,7 +173,7 @@ const TransactionDialog = (props) => {
 
                       {/*Chaincode and endorsers*/}
                       {props.transaction.chaincode_spec !== undefined ? <p><b>Chaincode: </b>{`${props.transaction.chaincode_spec.chaincode_id.name}`}</p> : <p/>}
-                      {props.transaction.endorsements !== undefined  && Array.isArray(props.transaction.endorsements) ? <p><b>Endorsing peers: </b>{`${get_endorsers_text}`}</p> : <p/>}
+                      {get_endorsers_text !== false ? <p><b>Endorsing peers: </b>{`${get_endorsers_text}`}</p> : <p/>}
                       
                       <CategoryDivider/>
                       
