@@ -1,7 +1,9 @@
 # Hyperledger Fabric Transaction Conflict Graph Generation Frontend
 
 This project is written in JavaScript, uses React, Vis.js and TailwindCSS, and serves as the user interface for an application that generates transaction conflict graphs (also called precedence graphs or serializability graphs) from transactions of the Hyperledger Fabric blockchain.
+
 This app should be run together with the corresponding [backend](https://github.com/ninori9/GraphGenerationBackend) if graphs should be generated using extracted Fabric blockchain transaction data.
+
 Previously downloaded graphs can be visualized using the frontend only.
 
 ## How to use
