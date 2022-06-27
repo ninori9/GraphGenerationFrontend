@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import PageLayout from '../components/PageLayout';
+import PageLayout from '../components/page/PageLayout';
 import UploadFile from '../components/UploadFile';
 
 import GraphHeader from '../components/GraphHeader';
