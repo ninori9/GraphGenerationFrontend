@@ -1,10 +1,10 @@
 import React from 'react';
 
-import ROUTES from '../Routes';
+import ROUTES from '../../Routes';
 
-import useWindowDimensions from '../functionality/WindowDimensions';
+import useWindowDimensions from '../../functionality/WindowDimensions';
 
-import hyperledgerFabric from '../components/images/hyperledger_fabric_logo_color.png';
+import hyperledgerFabric from '../images/hyperledger_fabric_logo_color.png';
 
 
 const routes = [

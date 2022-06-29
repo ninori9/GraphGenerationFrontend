@@ -4,7 +4,7 @@ import ky from 'ky';
 import BallLoader from '../components/loader/BallLoader';
 import SetParameters from '../components/SetParamters';
 import GraphHeader from '../components/GraphHeader';
-import PageLayout from '../components/PageLayout';
+import PageLayout from '../components/page/PageLayout';
 import TransactionConflictGraphVis from '../components/TransactionConflictGraphVis';
 import TransactionDialog from '../components/dialogs/TransactionDialog';
 
