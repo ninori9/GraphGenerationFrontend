@@ -71,6 +71,8 @@ const GraphHeader = (props) => {
     const successfulTx = props.blockData.attributes.transactions - props.blockData.attributes.totalFailures;
 
 
+    console.log('inter', props.blockData.attributes.intraBlockConflicts);
+
     return (
       <div className="w-full flex flex-col flex-nowrap space-y-2">
         {/* Heading and download button */}
@@ -91,8 +93,12 @@ const GraphHeader = (props) => {
             <GraphAttributeDivider/>
             {/*Conflicts between transactions*/}
             <li>
-                <span>{`Conflicts between transactions: ${props.blockData.attributes.conflicts} `}</span>
-                <span className={`${props.blockData.attributes.conflictsLeadingToFailure === 0 ? `text-green-800` : `text-red-800`} font-medium`}>{`(${props.blockData.attributes.conflictsLeadingToFailure} conflicts leading to transaction failure)`}</span>
+                <span>{`Dependencies between transactions: ${props.blockData.attributes.conflicts} `}</span>
+                <span className={`${props.blockData.attributes.conflictsLeadingToFailure === 0 ? `text-green-800` : `text-red-800`} font-medium`}>{`(${props.blockData.attributes.conflictsLeadingToFailure} dependencies leading to transaction failure)`}</span>
+            </li>
+            <li className='font-medium'>
+                <span>{`Intra-block conflicts: ${props.blockData.attributes.intraBlockConflicts}, `}</span>
+                <span>{`Inter-block conflicts: ${props.blockData.attributes.interBlockConflicts}`}</span>
             </li>
             <GraphAttributeDivider/>
             {/*Serializability attributes*/}
