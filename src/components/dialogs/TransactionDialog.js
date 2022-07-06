@@ -145,7 +145,7 @@ const TransactionDialog = (props) => {
 
                       {/*Chaincode and endorsers*/}
                       {props.transaction.chaincode_spec !== undefined ? <p><b>Chaincode: </b>{`${props.transaction.chaincode_spec.chaincode}`}</p> : <p/>}
-                      {props.transaction.chaincode_spec !== undefined && props.transaction.chaincode_spec.chaincode !== undefined && props.transaction.chaincode_spec.chaincode !== '' ? <p><b>Function: </b>{`${String.fromCharCode(...props.transaction.chaincode_spec.function)}`}</p> : <p/>}
+                      {props.transaction.chaincode_spec !== undefined && props.transaction.chaincode_spec.chaincode !== undefined && props.transaction.chaincode_spec.chaincode !== '' && props.transaction.chaincode_spec.function !== undefined && Array.isArray(props.transaction.chaincode_spec.function) ? <p><b>Function: </b>{`${String.fromCharCode(...props.transaction.chaincode_spec.function)}`}</p> : <p/>}
                       {props.transaction.endorsements !== undefined && Array.isArray(props.transaction.endorsements) ? <p><b>Endorsing peers: </b>{`[${props.transaction.endorsements.join(', ')}]`}</p> : <p/>}
                       
                       <CategoryDivider/>
