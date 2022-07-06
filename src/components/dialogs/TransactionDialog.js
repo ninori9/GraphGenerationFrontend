@@ -14,8 +14,8 @@ const TransactionDialog = (props) => {
   // Validate transactions
   useEffect(() => {
     // Validate required properties, other properties either reviewed during graph creation or in other methods
-    if(props.transaction.creator.Mspid === undefined || props.transaction.tx_id === undefined || 
-      (props.transaction.chaincode_spec !== undefined && props.transaction.chaincode_spec.chaincode_id.name === undefined) || props.transaction.tx_block_number === undefined) {
+    if(props.transaction.creator === undefined || props.transaction.tx_id === undefined || 
+      (props.transaction.chaincode_spec !== undefined && props.transaction.chaincode_spec.chaincode === undefined) || props.transaction.tx_block_number === undefined) {
         setDialogError('Error: Transaction does not have the required structure.');
     }
     else {
@@ -36,14 +36,14 @@ const TransactionDialog = (props) => {
       for(let i = 0; i<props.transaction.rw_set.length; i++) {
         
         // Validation if rw_set of transaction is well formed
-        if(props.transaction.rw_set[i].namespace === undefined || props.transaction.chaincode_spec.chaincode_id.name === undefined || props.transaction.rw_set[i].rwset === undefined ||
+        if(props.transaction.rw_set[i].namespace === undefined || props.transaction.chaincode_spec.chaincode === undefined || props.transaction.rw_set[i].rwset === undefined ||
           props.transaction.rw_set[i].rwset.reads === undefined || ! Array.isArray(props.transaction.rw_set[i].rwset.reads) || props.transaction.rw_set[i].rwset.writes === undefined || ! Array.isArray(props.transaction.rw_set[i].rwset.writes) ||
           props.transaction.rw_set[i].rwset.range_queries_info === undefined || ! Array.isArray(props.transaction.rw_set[i].rwset.range_queries_info)) {
             valid = false;
         }
 
         // Consider only rw_sets that match chaincode of transaction
-        if(valid && props.transaction.rw_set[i].namespace === props.transaction.chaincode_spec.chaincode_id.name) {
+        if(valid && props.transaction.rw_set[i].namespace === props.transaction.chaincode_spec.chaincode) {
           // Add reads
           for(let j=0; j<props.transaction.rw_set[i].rwset.reads.length; j++) {
             // If read key not defined, transaction not valid
@@ -95,33 +95,6 @@ const TransactionDialog = (props) => {
   }, [props.transaction]);
 
 
-  // Return text representation of endorsements
-  const get_endorsers_text = useMemo(() => {
-    if(props.transaction.endorsements === undefined || ! Array.isArray(props.transaction.endorsements)) {
-      return false;
-    }
-    else {
-      let endorsers_text = `[`;
-      for(let i=0; i<props.transaction.endorsements.length; i++) {
-
-        // Validate structure of endorsement entry
-        if(props.transaction.endorsements[i].endorser === undefined || props.transaction.endorsements[i].endorser.Mspid === undefined) {
-          return false;
-        }
-
-        endorsers_text += `${props.transaction.endorsements[i].endorser.Mspid}`
-        if(i < props.transaction.endorsements.length - 1) {
-          endorsers_text += `, `
-        }
-      }
-      endorsers_text += `]`;
-      return endorsers_text;
-    }
-  }, [props.transaction]);
-
-
-
-
   return (
       <div>
         {props.transaction === null ? <div/> :
@@ -143,14 +116,13 @@ const TransactionDialog = (props) => {
                   <div className="w-full h-px bg-tum mb-4" />
 
                   {/* Attributes or Error (depending on where error occured, show different text) */}
-                  {dialogError !== null || (props.transaction.endorsements !== undefined  && Array.isArray(props.transaction.endorsements) && get_endorsers_text === false) || getReadWriteKeys.length === 0 ? 
-                    <p className='text-red-600'>{props.transaction.endorsements !== undefined  && Array.isArray(props.transaction.endorsements) && get_endorsers_text === false ? 'Error: Endorsements of transaction do not have the required structure.' 
-                    : getReadWriteKeys.length === 0 ? 'Error: RW Set of transaction does not have the required structure.' : dialogError}</p>
+                  {dialogError !== null || getReadWriteKeys.length === 0 ? 
+                    <p className='text-red-600'>{getReadWriteKeys.length === 0 ? 'Error: RW Set of transaction does not have the required structure.': dialogError}</p>
                     :
                     <div className='font-medium px-6'>
                       {/*ID and creator*/}
                       <div><b>Transaction ID: </b><LinesEllipsis maxLine='1' text={`${props.transaction.tx_id}`} ellipsis='...' trimRight basedOn='letters'></LinesEllipsis></div>
-                      <p><b>Creator MSPID: </b>{`${props.transaction.creator.Mspid}`}</p>
+                      <p><b>Creator MSPID: </b>{`${props.transaction.creator}`}</p>
 
                       <CategoryDivider/>
 
@@ -172,8 +144,9 @@ const TransactionDialog = (props) => {
                       <CategoryDivider/>
 
                       {/*Chaincode and endorsers*/}
-                      {props.transaction.chaincode_spec !== undefined ? <p><b>Chaincode: </b>{`${props.transaction.chaincode_spec.chaincode_id.name}`}</p> : <p/>}
-                      {get_endorsers_text !== false ? <p><b>Endorsing peers: </b>{`${get_endorsers_text}`}</p> : <p/>}
+                      {props.transaction.chaincode_spec !== undefined ? <p><b>Chaincode: </b>{`${props.transaction.chaincode_spec.chaincode}`}</p> : <p/>}
+                      {props.transaction.chaincode_spec !== undefined && props.transaction.chaincode_spec.chaincode !== undefined && props.transaction.chaincode_spec.chaincode !== '' ? <p><b>Function: </b>{`${String.fromCharCode(...props.transaction.chaincode_spec.function)}`}</p> : <p/>}
+                      {props.transaction.endorsements !== undefined && Array.isArray(props.transaction.endorsements) ? <p><b>Endorsing peers: </b>{`[${props.transaction.endorsements.join(', ')}]`}</p> : <p/>}
                       
                       <CategoryDivider/>
                       

@@ -51,7 +51,7 @@ export const tx_codes = {
 export const placeholder_tx = {
     tx_number: '', tx_id: '', creator: '', class: '', typeString: '', 
     rw_set: [],
-    chaincode_spec: {chaincode_id: {name: ''}}, 
+    chaincode_spec: {chaincode: '', function: ''}, 
     endorsements: [], 
     block_number: '', tx_block_number: '', 
     status: 0
