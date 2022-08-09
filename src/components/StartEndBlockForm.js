@@ -33,7 +33,7 @@ const StartEndBlockForm = (props) => {
             .integer('Please enter a valid number.')
             .min(Yup.ref('startblock'), 'Must be greater or equal to start block')
             .when('startblock', (startblock, schema) => {
-                return schema.max(startblock + 5, 'Maximum block range is currently five blocks');
+                return schema.max(startblock + 150, 'Maximum block range is currently 150 blocks');
             })
             .required('This field is required.')
       })}

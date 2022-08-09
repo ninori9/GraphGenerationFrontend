@@ -70,9 +70,6 @@ const GraphHeader = (props) => {
     // Amount of successful transactions
     const successfulTx = props.blockData.attributes.transactions - props.blockData.attributes.totalFailures;
 
-
-    console.log('inter', props.blockData.attributes.intraBlockConflicts);
-
     return (
       <div className="w-full flex flex-col flex-nowrap space-y-2">
         {/* Heading and download button */}
