@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import DownloadButton from './buttons/DownloadButton';
 import { tx_codes } from '../utils/Utils';
+import DownloadAttributesButton from './buttons/DownloadAttributesButton';
 
 
 // Divider for different attributes of the transaction conflict graph
@@ -82,12 +83,15 @@ const GraphHeader = (props) => {
 
         {/* List of attributes */}
         <ul className="list-disc pl-8 pr-8 pb-8 font-semibold text-lg text-black-800">
+            
             {/*Total, successful and failed transactions*/}
             <li>{`Total transactions: ${props.blockData.attributes.transactions}`}</li>
             <li className='text-green-800'>{`Successful transactions: ${successfulTx}`}</li>
             <li className='text-red-800'><span>{`Failed transactions: ${props.blockData.attributes.totalFailures} `}</span><span className='font-medium'>{`${failureTypeString}`}</span></li>
             <li className='text-red-800'>{`Failure rate: ${failureRate}%`}</li>
+            
             <GraphAttributeDivider/>
+            
             {/*Conflicts between transactions*/}
             <li>
                 <span>{`Dependencies between transactions: ${props.blockData.attributes.conflicts} `}</span>
@@ -97,10 +101,17 @@ const GraphHeader = (props) => {
                 <span>{`Intra-block conflicts: ${props.blockData.attributes.intraBlockConflicts}, `}</span>
                 <span>{`Inter-block conflicts: ${props.blockData.attributes.interBlockConflicts}`}</span>
             </li>
+            
             <GraphAttributeDivider/>
-            {/*Serializability attributes*/}
-            <li className={serializableStyle}>{serializable}</li>
-            <li className='text-black-800 font-medium'> {abortText}</li>
+            
+            {/*Serializability attributes and download attributes button*/}
+            <div className="w-full flex flex-col justify-center sm:flex-row sm:justify-between sm:space-y-0 flex-nowrap items-center">
+                <div>
+                    <li className={serializableStyle}>{serializable}</li>
+                    <li className='text-black-800 font-medium'> {abortText}</li>
+                </div>
+                <DownloadAttributesButton data={props.blockData.attributes}/>
+            </div>
         </ul>
       </div>
     );
