@@ -41,6 +41,9 @@ const GraphHeader = (props) => {
     const getTransactionsToAbortString = function() {
         let str = ``;
         for(let i = 0; i<props.blockData.attributes.needToAbort.length; i++) {
+            if(i == 0 && props.blockData.attributes.needToAbort[0] === false) {
+                return str;
+            }
             if(i === 0) {
                 str += ` (`;
             }
@@ -62,7 +65,8 @@ const GraphHeader = (props) => {
     const serializable = `The given set of transactions is ${props.blockData.attributes.serializable ? '' : 'not '}serializable`;
     const serializableStyle = ! props.blockData.attributes.serializable? 'text-red-900' : 'text-green-900';
     const abortedTxText = getTransactionsToAbortString();
-    const abortText = `${props.blockData.attributes.needToAbort.length} transaction${props.blockData.attributes.needToAbort.length === 1 ? '' : 's'}${abortedTxText} need${props.blockData.attributes.needToAbort.length === 1 ? 's' : ''} to be aborted to achieve serializability`;
+    const abortText = props.blockData.attributes.needToAbort.length > 0 && props.blockData.attributes.needToAbort[0] === false ? '> 300 transactions need to be aborted to achieve serializability'
+        :   `${props.blockData.attributes.needToAbort.length} transaction${props.blockData.attributes.needToAbort.length === 1 ? '' : 's'}${abortedTxText} need${props.blockData.attributes.needToAbort.length === 1 ? 's' : ''} to be aborted to achieve serializability`;
 
     // Failure rate and failure text
     const failureRate = (props.blockData.attributes.totalFailures/props.blockData.attributes.transactions * 100).toFixed(2);
