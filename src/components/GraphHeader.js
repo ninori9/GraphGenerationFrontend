@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import DownloadButton from './buttons/DownloadButton';
 import { tx_codes } from '../utils/Utils';
-import DownloadAttributesButton from './buttons/DownloadAttributesButton';
+import DownloadVariablesButton from './buttons/DownloadVariablesButton';
 
 
 // Divider for different attributes of the transaction conflict graph
@@ -41,8 +41,8 @@ const GraphHeader = (props) => {
     const getTransactionsToAbortString = function() {
         let str = ``;
         for(let i = 0; i<props.blockData.attributes.needToAbort.length; i++) {
-            if(i == 0 && props.blockData.attributes.needToAbort[0] === false) {
-                return str;
+            if(props.blockData.attributes.needToAbort[i] === false) {
+                return '';
             }
             if(i === 0) {
                 str += ` (`;
@@ -108,13 +108,13 @@ const GraphHeader = (props) => {
             
             <GraphAttributeDivider/>
             
-            {/*Serializability attributes and download attributes button*/}
+            {/*Serializability and download variables button*/}
             <div className="w-full flex flex-col justify-center sm:flex-row sm:justify-between sm:space-y-0 flex-nowrap items-center">
                 <div>
                     <li className={serializableStyle}>{serializable}</li>
                     <li className='text-black-800 font-medium'> {abortText}</li>
                 </div>
-                <DownloadAttributesButton data={props.blockData.attributes}/>
+                <DownloadVariablesButton data={props.blockData.attributes}/>
             </div>
         </ul>
       </div>

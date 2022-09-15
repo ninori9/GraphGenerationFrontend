@@ -65,7 +65,7 @@ const GeneratePage = () => {
     setError(null);
     let response;
     try {
-        response = await ky.get(`http://localhost:3007/blockData/graphGeneration?startblock=${startblock}&endblock=${endblock}&client=0`, {timeout: 180000}).json();
+        response = await ky.get(`graphGeneration?startblock=${startblock}&endblock=${endblock}&client=0`, {timeout: 180000}).json();
         setBlockData(response);
         setFetchingData(false);
     } catch (e) {

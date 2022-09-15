@@ -1,9 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types'; 
 
-const DownloadAttributesButton = (props) => {
-  // .json file name based on block numbers and data
-  const d = new Date();
+const DownloadVariablesButton = (props) => {
   const filename = `BLOCK_${props.data.startblock}-${props.data.endblock}.json`;
 
   const style = `appearance-none bg-fabric-blue rounded-lg box-border cursor-pointer
@@ -27,14 +25,14 @@ const DownloadAttributesButton = (props) => {
           <path d="M0 0h24v24H0z" fill="none"/><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
       </svg>
       <div className="w-4"/>
-      Download Attributes
+      Download Graph Variables
     </a>
   );
 };
 
 
-DownloadAttributesButton.propTypes = {
+DownloadVariablesButton.propTypes = {
     data: PropTypes.object.isRequired,
 };
 
-export default DownloadAttributesButton;
+export default DownloadVariablesButton;
