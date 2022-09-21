@@ -23,7 +23,7 @@ function App() {
     </Routes>
   );
 
-  const test = renderApp();
+  //const test = renderApp();
 
   return (
     <div>
