@@ -112,7 +112,7 @@ const GraphHeader = (props) => {
             <div className="w-full flex flex-col justify-center sm:flex-row sm:justify-between sm:space-y-0 flex-nowrap items-center">
                 <div>
                     <li className={serializableStyle}>{serializable}</li>
-                    <li className='text-black-800 font-medium'> {abortText}</li>
+                    {abortText !== '' ? <li className='text-black-800 font-medium'> {abortText}</li> : <div/>}
                 </div>
                 <DownloadVariablesButton data={props.blockData.attributes}/>
             </div>
