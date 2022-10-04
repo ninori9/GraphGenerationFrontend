@@ -18,7 +18,8 @@ The generated graph and additional variables can be downloaded as a .json file. 
 
 Each node in the graph represents a transaction. The transactions can be selected to view additional details, such as the invoked chaincode function or the accessed keys. The edges in the graph represent the dependencies between the transactions. On selection, users are presented with additional information, such as the keys causing the dependency.
 
-Transactions in separate blocks are generally colored differently. The borders of failed transactions and dependencies causing transaction failure are colored in red.
+There are currently five different colors, which are used successively for the different blocks. If an edge is between two transactions that have a different color then it represents an inter-block conflict. However, it could be that an inter-block conflict is between two transactions with the same color.
+The borders of failed transactions and dependencies causing transaction failure are colored in red.
 
 ## How to use
 
