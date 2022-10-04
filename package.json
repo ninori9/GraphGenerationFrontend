@@ -2,6 +2,9 @@
   "name": "graph-generator",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=14.0.0"
+  }
   "dependencies": {
     "@tailwindcss/forms": "^0.4.0",
     "@tailwindcss/line-clamp": "^0.3.1",
